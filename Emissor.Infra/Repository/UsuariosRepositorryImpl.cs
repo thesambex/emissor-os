@@ -19,9 +19,10 @@ public class UsuariosRepositorryImpl : IUsuariosRepository
         _pgContext = pgContext;
     }
 
-    public Task<Usuario> CriarUsuario()
+    public async Task<Usuario> CriarUsuario(Usuario usuario)
     {
-        throw new NotImplementedException();
+        await _pgContext.Usuarios.AddAsync(usuario);
+        return usuario;
     }
 
 }

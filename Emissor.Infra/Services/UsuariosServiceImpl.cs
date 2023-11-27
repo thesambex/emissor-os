@@ -15,10 +15,12 @@ public class UsuariosServiceImpl : IUsuariosService
 {
 
     private readonly IUsuariosRepository _usuariosRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UsuariosServiceImpl(IAbstractRepositoryFactory abstractRepositoryFactory)
+    public UsuariosServiceImpl(IAbstractRepositoryFactory abstractRepositoryFactory, IUnitOfWork unitOfWork)
     {
         _usuariosRepository = abstractRepositoryFactory.CreateUsuariosRepository();
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<IActionResult> CriarUsuario(CriarUsuarioDTO body)

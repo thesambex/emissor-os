@@ -1,4 +1,5 @@
-﻿using Emissor.Infra.Database.Mapping;
+﻿using Emissor.Domain.Entities;
+using Emissor.Infra.Database.Mapping;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Emissor.Application.Database;
 
 public class PgContext : DbContext
 {
+
+    public DbSet<Usuario> Usuarios { get; set; }
 
     public PgContext(DbContextOptions<PgContext> options) 
         : base(options)
