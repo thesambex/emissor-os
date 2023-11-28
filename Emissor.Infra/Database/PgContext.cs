@@ -13,6 +13,7 @@ public class PgContext : DbContext
 {
 
     public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Cliente> Clientes { get; set; }
 
     public PgContext(DbContextOptions<PgContext> options) 
         : base(options)
@@ -22,8 +23,9 @@ public class PgContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.HasPostgresExtension("uuid-osp");
+        builder.HasPostgresExtension("uuid-ossp");
         builder.ApplyConfiguration(new UsuarioMapping());
+        builder.ApplyConfiguration(new ClienteMapping());
     }
 
 }
