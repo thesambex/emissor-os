@@ -9,7 +9,7 @@ namespace Emissor.Application.Repository;
 
 public interface IUsuariosRepository
 {
-
     Task<Usuario> CriarUsuario(Usuario usuario);
-
+    Task<Usuario?> GetUsuarioById(Guid id);
+    Task<bool> IssetUsuarioByNomeUsuario(string username);
 }

@@ -1,6 +1,7 @@
 ﻿using Emissor.Application.Database;
 using Emissor.Application.Repository;
 using Emissor.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,9 @@ public class UsuariosRepositorryImpl : IUsuariosRepository
         await _pgContext.SaveChangesAsync();
         return usuario;
     }
+
+    public async Task<Usuario?> GetUsuarioById(Guid id) => await _pgContext.Usuarios.FindAsync(id);
+
+    public async Task<bool> IssetUsuarioByNomeUsuario(string username) => await _pgContext.Usuarios.CountAsync(e => e.NomeUsuario == username) > 0;
 
 }

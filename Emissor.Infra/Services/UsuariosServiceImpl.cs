@@ -3,6 +3,7 @@ using Emissor.Application.Repository;
 using Emissor.Application.Security.Password;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs;
+using Emissor.Domain.DTOs.Standard;
 using Emissor.Domain.Entities;
 using Emissor.Infra.Security.Password;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,14 @@ public class UsuariosServiceImpl : IUsuariosService
 
     public async Task<IActionResult> CriarUsuario(CriarUsuarioDTO body)
     {
+
+        if(await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
+        {
+            return new ObjectResult(new ErrorResponseDTO() { Message = "Já existe um usuário com este nome de usuário", Field = "nome_usuario" })
+            {
+                StatusCode = StatusCodes.Status409Conflict
+            };
+        }
 
         var passwordHashing = new PasswordHashing(new BCryptPasswordHashStrategy());
 
