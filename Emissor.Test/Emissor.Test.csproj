@@ -22,4 +22,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Emissor.Application\Emissor.Application.csproj" />
+    <ProjectReference Include="..\Emissor.Domain\Emissor.Domain.csproj" />
+    <ProjectReference Include="..\Emissor.Infra\Emissor.Infra.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 ﻿using Emissor.Application.Factory;
 using Emissor.Application.Repository;
+using Emissor.Application.Security.Password;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;

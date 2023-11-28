@@ -22,6 +22,7 @@ public class UsuariosRepositorryImpl : IUsuariosRepository
     public async Task<Usuario> CriarUsuario(Usuario usuario)
     {
         await _pgContext.Usuarios.AddAsync(usuario);
+        await _pgContext.SaveChangesAsync();
         return usuario;
     }
 
