@@ -2,8 +2,8 @@
 using Emissor.Application.Repository;
 using Emissor.Application.Security.Password;
 using Emissor.Application.Services;
-using Emissor.Domain.DTOs;
 using Emissor.Domain.DTOs.Standard;
+using Emissor.Domain.DTOs.Usuarios;
 using Emissor.Domain.Entities;
 using Emissor.Infra.Security.Password;
 using Microsoft.AspNetCore.Http;
@@ -51,7 +51,7 @@ public class UsuariosServiceImpl : IUsuariosService
             usuario.Senha = passwordHashing.Hash(usuario.Nome);
             usuario = await _usuariosRepository.CriarUsuario(usuario);
         } catch (Exception ex) {
-            _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}");
+            _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 
@@ -61,6 +61,48 @@ public class UsuariosServiceImpl : IUsuariosService
             NomeUsuario = usuario.NomeUsuario,
         };
 
-        return new CreatedAtActionResult("ObterUsuarioById", null, new {id = response.Id}, response);
+        return new CreatedAtActionResult("GetUsuario", null, new {id = response.Id}, response);
     }
+
+    public async Task<IActionResult> Atualizar(Guid id, AtualizarUsuarioDTO body)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IActionResult> Deletar(Guid id)
+    {
+        try
+        {
+            await _usuariosRepository.DeletarUsuario(id);
+        } catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao deletar o usuário ${id} {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+
+        return new NoContentResult();
+    }
+
+    public async Task<IActionResult> GetUsuarioById(Guid id)
+    {
+        var usuario = await _usuariosRepository.GetUsuarioById(id);
+        if (usuario == null)
+        {
+            return new NotFoundResult();
+        }
+
+        return new ObjectResult(new UsuarioDTO() { Id = usuario.Id, Nome = usuario.Nome, NomeUsuario = usuario.NomeUsuario});
+    }
+
+    public async Task<IActionResult> GetUsuarioByNomeUsuario(string username)
+    {
+        var usuario = await _usuariosRepository.GetUsuarioByNomeUsuario(username);
+        if (usuario == null)
+        {
+            return new NotFoundResult();
+        }
+
+        return new ObjectResult(new UsuarioDTO() { Id = usuario.Id, Nome = usuario.Nome, NomeUsuario = usuario.NomeUsuario });
+    }
+
 }
