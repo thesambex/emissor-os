@@ -66,7 +66,45 @@ public class UsuariosServiceImpl : IUsuariosService
 
     public async Task<IActionResult> Atualizar(Guid id, AtualizarUsuarioDTO body)
     {
-        throw new NotImplementedException();
+        var usuario = await _usuariosRepository.GetUsuarioById(id);
+        if(usuario == null)
+        {
+            return new NotFoundResult();
+        }
+
+        if (!body.NomeUsuario.Equals(usuario.NomeUsuario))
+        {
+            if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
+            {
+                var error = new ErrorResponseDTO()
+                {
+                    Message = "Já existe um usuário com este nome de usuário",
+                    Field = "nome_usuario"
+                };
+                return new ConflictObjectResult(error);
+            }
+        }
+
+        var passwordHashing = new PasswordHashing(new BCryptPasswordHashStrategy());
+
+        try
+        {
+            var data = new Usuario()
+            {
+                Nome = body.Nome,
+                NomeUsuario = body.NomeUsuario,
+                Senha = passwordHashing.Hash(usuario.Nome)
+            };
+
+            await _usuariosRepository.AtualizarUsuario(id, data);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao atualizar o usuário: ${ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+
+        return new OkResult();
     }
 
     public async Task<IActionResult> Deletar(Guid id)

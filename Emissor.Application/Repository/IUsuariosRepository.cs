@@ -13,5 +13,6 @@ public interface IUsuariosRepository
     Task<Usuario?> GetUsuarioById(Guid id);
     Task<Usuario?> GetUsuarioByNomeUsuario(string username);
     Task<bool> IssetUsuarioByNomeUsuario(string username);
+    Task AtualizarUsuario(Guid id, Usuario usuario);
     Task DeletarUsuario(Guid id);
 }

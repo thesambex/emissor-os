@@ -1,4 +1,5 @@
 ﻿using Emissor.Application.Services;
+using Emissor.Domain.DTOs.Standard;
 using Emissor.Domain.DTOs.Usuarios;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,6 +55,17 @@ public class UsuariosController : ControllerBase
     public async Task<IActionResult> DeletarUsuarioById(Guid id)
     {
         return await _usuariosService.Deletar(id);
+    }
+
+    [HttpPut]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AtualizarUsuario(Guid id, AtualizarUsuarioDTO body)
+    {
+        return await _usuariosService.Atualizar(id, body);
     }
 
 }

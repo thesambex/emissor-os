@@ -33,6 +33,20 @@ public class UsuariosRepositorryImpl : IUsuariosRepository
 
     public async Task<bool> IssetUsuarioByNomeUsuario(string username) => await _pgContext.Usuarios.CountAsync(e => e.NomeUsuario == username) > 0;
 
+    public async Task AtualizarUsuario(Guid id, Usuario usuario)
+    {
+        var usu = await _pgContext.Usuarios.FindAsync(id);
+        usu.Nome = usuario.Nome;
+        usu.Senha = usuario.Senha;
+        
+        if(!usu.NomeUsuario.Equals(usuario.NomeUsuario))
+        {
+            usu.NomeUsuario = usuario.NomeUsuario;
+        }
+        
+        await _pgContext.SaveChangesAsync();
+    }
+
     public async Task DeletarUsuario(Guid id)
     {
         var usuario = await _pgContext.Usuarios.FindAsync(id);
