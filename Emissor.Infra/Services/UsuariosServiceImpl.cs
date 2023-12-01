@@ -129,7 +129,7 @@ public class UsuariosServiceImpl : IUsuariosService
             return new NotFoundResult();
         }
 
-        return new ObjectResult(new UsuarioDTO() { Id = usuario.Id, Nome = usuario.Nome, NomeUsuario = usuario.NomeUsuario});
+        return new OkObjectResult(new UsuarioDTO() { Id = usuario.Id, Nome = usuario.Nome, NomeUsuario = usuario.NomeUsuario});
     }
 
     public async Task<IActionResult> GetUsuarioByNomeUsuario(string username)

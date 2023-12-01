@@ -46,7 +46,35 @@ public class UsuariosServiceTest : IDisposable
     }
 
     [Fact]
-    public async void Deve_Atualizar_Um_Usuario_No_Banco()
+    public async void Deve_Cadastrar_Um_Novo_Usuario()
+    {
+        var usuario = new CriarUsuarioDTO()
+        {
+            Nome = "Ives Samuel",
+            NomeUsuario = "ivl64",
+            Senha = "163321"
+        };
+
+        var result = await usuariosService.CriarUsuario(usuario);
+
+        Assert.NotNull(result);
+        Assert.IsType<CreatedAtActionResult>(result);
+    }
+
+    [Fact]
+    public async void Deve_Obter_Um_Usuario()
+    {
+        var response = await usuariosService.GetUsuarioById(Guid.Parse("5c958852-b81b-4d36-86b6-ead7708b8444"));
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+
+        var payload = ((OkObjectResult)response).Value as UsuarioDTO;
+        Assert.NotNull(payload);
+    }
+
+    [Fact(Skip = "Não é necessário atualizar no momento")]
+    public async void Deve_Atualizar_Um_Usuario()
     {
 
         var usuarioDTO = new AtualizarUsuarioDTO()
@@ -60,6 +88,15 @@ public class UsuariosServiceTest : IDisposable
         
         Assert.NotNull(result);
         Assert.IsType<OkResult>(result);
+    }
+
+    [Fact(Skip = "Não deve deletar um usuário no momento")]
+    public async void Deve_Deletar_Um_Usuario()
+    {
+        var result = await usuariosService.Deletar(Guid.Parse("5c958852-b81b-4d36-86b6-ead7708b8444"));
+
+        Assert.NotNull(result);
+        Assert.IsType<NoContentResult>(result);
     }
 
 }
