@@ -51,7 +51,7 @@ public class UsuariosServiceTest : IDisposable
         var usuario = new CriarUsuarioDTO()
         {
             Nome = "Ives Samuel",
-            NomeUsuario = "ivl64",
+            NomeUsuario = "vlo",
             Senha = "163321"
         };
 

@@ -40,7 +40,7 @@ public class UsuariosServiceImpl : IUsuariosService
             };
         }
 
-        var passwordHashing = new PasswordHashing(new BCryptPasswordHashStrategy());
+        var passwordHashing = new PasswordHashingManager();
 
         var usuario = new Usuario();
         usuario.Nome = body.Nome;
@@ -48,7 +48,7 @@ public class UsuariosServiceImpl : IUsuariosService
 
         try
         {
-            usuario.Senha = passwordHashing.Hash(usuario.Nome);
+            usuario.Senha = passwordHashing.GenerateHash(usuario.Nome);
             usuario = await _usuariosRepository.CriarUsuario(usuario);
         } catch (Exception ex) {
             _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
@@ -85,7 +85,7 @@ public class UsuariosServiceImpl : IUsuariosService
             }
         }
 
-        var passwordHashing = new PasswordHashing(new BCryptPasswordHashStrategy());
+        var passwordHashing = new PasswordHashingManager();
 
         try
         {
@@ -93,7 +93,7 @@ public class UsuariosServiceImpl : IUsuariosService
             {
                 Nome = body.Nome,
                 NomeUsuario = body.NomeUsuario,
-                Senha = passwordHashing.Hash(usuario.Nome)
+                Senha = passwordHashing.GenerateHash(usuario.Nome)
             };
 
             await _usuariosRepository.AtualizarUsuario(id, data);

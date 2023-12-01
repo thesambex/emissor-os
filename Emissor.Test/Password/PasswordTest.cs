@@ -14,11 +14,11 @@ public class PasswordTest
     [Fact]
     public void Shoud_Hash_With_BCrypt_And_Return_True()
     {
-        var hashing = new PasswordHashing(new BCryptPasswordHashStrategy());
+        var hashing = new PasswordHashingManager();
 
         var password = "@Tes_t196$";
-        var hash = hashing.Hash(password);
-        Assert.True(hashing.Verify(password, hash));
+        var hash = hashing.GenerateHash(password);
+        Assert.True(hashing.VerifyHash(password, hash));
     }
 
 }
