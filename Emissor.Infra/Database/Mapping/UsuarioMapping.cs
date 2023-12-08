@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Emissor.Infra.Database.Mapping;
 
-public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
+internal class UsuarioMapping : IEntityTypeConfiguration<Usuario>
 {
 
     public void Configure(EntityTypeBuilder<Usuario> builder)

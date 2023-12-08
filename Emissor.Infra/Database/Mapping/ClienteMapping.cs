@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Emissor.Infra.Database.Mapping;
 
-public class ClienteMapping : IEntityTypeConfiguration<Cliente>
+internal class ClienteMapping : IEntityTypeConfiguration<Cliente>
 {
     public void Configure(EntityTypeBuilder<Cliente> builder)
     {

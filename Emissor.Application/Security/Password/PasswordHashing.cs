@@ -16,14 +16,8 @@ public class PasswordHashing
         _strategy = strategy;
     }
 
-    public string Hash(string password)
-    {
-        return _strategy.Hash(password);
-    }
+    public string Hash(string password) => _strategy.Hash(password);
 
-    public bool Verify(string password, string hash) 
-    {
-        return _strategy.Verify(password, hash);
-    }
+    public bool Verify(string password, string hash) => _strategy.Verify(password, hash);
 
 }

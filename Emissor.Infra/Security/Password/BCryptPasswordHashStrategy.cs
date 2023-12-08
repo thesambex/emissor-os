@@ -8,16 +8,10 @@ using BC = BCrypt.Net.BCrypt;
 
 namespace Emissor.Infra.Security.Password;
 
-public class BCryptPasswordHashStrategy : IPasswordHashStrategy
+internal class BCryptPasswordHashStrategy : IPasswordHashStrategy
 {
-    public string Hash(string password)
-    {
-        return BC.EnhancedHashPassword(password);
-    }
+    public string Hash(string password) => BC.HashPassword(password, 12); 
 
-    public bool Verify(string password, string hash)
-    {
-        return BC.EnhancedVerify(password, hash);
-    }
+    public bool Verify(string password, string hash) => BC.Verify(password, hash);
 
 }

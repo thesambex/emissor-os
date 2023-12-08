@@ -5,12 +5,15 @@ using Emissor.Application.Services;
 using Emissor.Infra.Factory;
 using Emissor.Infra.Repository;
 using Emissor.Infra.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 builder.Services.AddControllers();
 
@@ -31,11 +34,32 @@ builder.Services.AddApiVersioning(opt =>
     }
 );
 
-builder.Services.AddDbContext<PgContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("Postgresql")));
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = config["JwtSettings:Issuer"],
+        ValidAudience = config["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+    };
 
+});
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddDbContext<PgContext>(opt => opt.UseNpgsql(config["ConnectionStrings:Postgresql"]));
 builder.Services.AddTransient<IUnitOfWork, UnitOfWorkImpl>();
 builder.Services.AddTransient<IAbstractRepositoryFactory, AbstractRepositoryFactoryImpl>();
 builder.Services.AddScoped<IUsuariosService, UsuariosServiceImpl>();
+builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 
 var app = builder.Build();
 
@@ -47,5 +71,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

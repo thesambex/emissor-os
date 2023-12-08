@@ -16,7 +16,7 @@ public class PasswordTest
     {
         var hashing = new PasswordHashingManager();
 
-        var password = "@Tes_t196$";
+        var password = "123456";
         var hash = hashing.GenerateHash(password);
         Assert.True(hashing.VerifyHash(password, hash));
     }

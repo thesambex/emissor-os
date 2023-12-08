@@ -1,6 +1,5 @@
 ﻿using Emissor.Application.Factory;
 using Emissor.Application.Repository;
-using Emissor.Application.Security.Password;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs.Standard;
 using Emissor.Domain.DTOs.Usuarios;
@@ -20,6 +19,7 @@ namespace Emissor.Infra.Services;
 public class UsuariosServiceImpl : IUsuariosService
 {
 
+    private readonly PasswordHashingManager passwordHashing = new PasswordHashingManager();
     private readonly IUsuariosRepository _usuariosRepository;
     private readonly ILogger _logger;
 
@@ -40,15 +40,13 @@ public class UsuariosServiceImpl : IUsuariosService
             };
         }
 
-        var passwordHashing = new PasswordHashingManager();
-
         var usuario = new Usuario();
         usuario.Nome = body.Nome;
         usuario.NomeUsuario = body.NomeUsuario;
 
         try
         {
-            usuario.Senha = passwordHashing.GenerateHash(usuario.Nome);
+            usuario.Senha = passwordHashing.GenerateHash(body.Senha!);
             usuario = await _usuariosRepository.CriarUsuario(usuario);
         } catch (Exception ex) {
             _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
@@ -84,8 +82,6 @@ public class UsuariosServiceImpl : IUsuariosService
                 return new ConflictObjectResult(error);
             }
         }
-
-        var passwordHashing = new PasswordHashingManager();
 
         try
         {
