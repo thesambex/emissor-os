@@ -1,12 +1,12 @@
 version: "3"
 services:
-  #backend:
-   # build: ./emissor-os-backend
-    #image: emissor-os-backend:latest
+  backend:
+    build: ./emissor-os-backend
+    image: emissor-os-backend:latest
   frontend:
     build: ./emissor-os-front
     image: emissor-os-front:latest
-    ports: 
+    ports:
       - "80:80"
-    #depends_on:
-     # - backend
+    depends_on:
+      - backend
