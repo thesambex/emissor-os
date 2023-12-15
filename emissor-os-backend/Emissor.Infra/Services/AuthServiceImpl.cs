@@ -37,14 +37,14 @@ public class AuthServiceImpl : IAuthService
 
     public async Task<IActionResult> SignIn(SignInDTO body)
     {
-        var usuario = await _usuariosRepository.GetUsuarioByNomeUsuario(body.NomeUsuario);
-        if(usuario == null)
-        {
-            return new NotFoundResult();
-        }
-
         try 
         {
+            var usuario = await _usuariosRepository.GetUsuarioByNomeUsuario(body.NomeUsuario);
+            if (usuario == null)
+            {
+                return new NotFoundResult();
+            }
+
             if (!passwordHashing.VerifyHash(body.Senha, usuario.Senha))
             {
                 return new UnauthorizedResult();

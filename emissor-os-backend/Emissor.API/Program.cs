@@ -55,6 +55,16 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.AddAuthorization();
 
+var CORSPOlicy = "_CORSPolicy";
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(name: CORSPOlicy,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
 builder.Services.AddDbContext<PgContext>(opt => opt.UseNpgsql(config["ConnectionStrings:Postgresql"]));
 builder.Services.AddTransient<IUnitOfWork, UnitOfWorkImpl>();
 builder.Services.AddTransient<IAbstractRepositoryFactory, AbstractRepositoryFactoryImpl>();
@@ -71,7 +81,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(CORSPOlicy);
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -29,7 +29,7 @@ public class UsuariosRepositorryImpl : IUsuariosRepository
 
     public async Task<Usuario?> GetUsuarioById(Guid id) => await _pgContext.Usuarios.FindAsync(id);
 
-    public async Task<Usuario?> GetUsuarioByNomeUsuario(string username) => await _pgContext.Usuarios.FirstAsync(e => e.NomeUsuario == username);
+    public async Task<Usuario?> GetUsuarioByNomeUsuario(string username) => await _pgContext.Usuarios.FirstOrDefaultAsync(e => e.NomeUsuario == username);
 
     public async Task<bool> IssetUsuarioByNomeUsuario(string username) => await _pgContext.Usuarios.CountAsync(e => e.NomeUsuario == username) > 0;
 
