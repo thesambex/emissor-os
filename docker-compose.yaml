@@ -1,8 +1,10 @@
-version: "3"
+version: "3.8"
 services:
   backend:
     build: ./emissor-os-backend
     image: emissor-os-backend:latest
+    ports:
+      - "5003:8080"
   frontend:
     build: ./emissor-os-front
     image: emissor-os-front:latest
