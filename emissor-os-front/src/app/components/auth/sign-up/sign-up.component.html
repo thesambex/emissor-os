@@ -1,1 +1,42 @@
-<p>sign-up works!</p>
+<div class="w-full h-screen flex items-center justify-center">
+    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" [formGroup]="signUpForm"
+        (ngSubmit)="$event.preventDefault(); onSubmit()">
+
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="nome">Nome</label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="nome" type="text" formControlName="nome" maxlength="60" placeholder="Nome" required />
+            </div>
+            <div class="w-full md:w-1/2 px-3">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="usuario">Usuário</label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="usuario" type="text" formControlName="usuario" maxlength="20" placeholder="Usuário" required />
+            </div>
+        </div>
+
+        <div class="flex flex-wrap -mx-3 mb-6">
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="senha">Senha</label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="senha" type="password" formControlName="senha" minlength="6" maxlength="12" placeholder="Senha"
+                    required />
+            </div>
+            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="senha">Repita a senha</label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="rsenha" type="password" formControlName="rsenha" minlength="6" maxlength="12"
+                    placeholder="Repita a Senha" required />
+            </div>
+        </div>
+
+        <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit" [disabled]="!signUpForm.valid">Cadastrar</button>
+
+    </form>
+</div>
