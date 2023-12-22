@@ -78,6 +78,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var service = scope.ServiceProvider;
+        var context = service.GetRequiredService<PgContext>();
+        context.Database.Migrate();
+    }
 }
 
 app.UseHttpsRedirection();

@@ -5,10 +5,34 @@ services:
     image: emissor-os-backend:latest
     ports:
       - "5003:8080"
+    networks:
+      - server
+    depends_on:
+      - database
   frontend:
     build: ./emissor-os-front
     image: emissor-os-front:latest
     ports:
       - "80:80"
+    network_mode: bridge
     depends_on:
       - backend
+  database:
+    image: postgres:16.1-alpine3.18
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - server
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db_emissor_os
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=pt_BR.UTF-8 --lc-ctype=pt_BR.UTF-8"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
+networks:
+  server:
+    driver: bridge
