@@ -16,6 +16,8 @@
                 id="senha" type="password" formControlName="senha" minlength="6" maxlength="12" placeholder="Senha" />
         </div>
 
+        <div class="mb-4" *ngIf="errorMsg != null">{{errorMsg}}</div>
+
         <button
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit" [disabled]="!signInForm.valid">Login</button>
