@@ -20,6 +20,7 @@ namespace Emissor.Infra.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "tipo_unidades", new[] { "unidade", "metro", "kilo", "litro" });
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
@@ -73,6 +74,86 @@ namespace Emissor.Infra.Migrations
                         .IsUnique();
 
                     b.ToTable("clientes", "clientes");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<Guid>("AtendenteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("atendente_id");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cliente_id");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("descricao");
+
+                    b.Property<DateTime?>("DtFim")
+                        .HasColumnType("TIMESTAMPTZ")
+                        .HasColumnName("dt_fim");
+
+                    b.Property<DateTime>("DtInicio")
+                        .HasColumnType("TIMESTAMPTZ")
+                        .HasColumnName("dt_inicio");
+
+                    b.Property<long>("Numero")
+                        .HasColumnType("SERIAL NOT NULL")
+                        .HasColumnName("numero");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("text")
+                        .HasColumnName("observacoes");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ordems_servico", "ordens_servico");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.Produto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<string>("CodigoBarra")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("codigo_barra");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("descricao");
+
+                    b.Property<string>("Referencia")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("referencia");
+
+                    b.Property<int>("Unidade")
+                        .HasColumnType("tipo_unidades")
+                        .HasColumnName("unidade");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Referencia")
+                        .IsUnique();
+
+                    b.ToTable("produtos", "estoque");
                 });
 
             modelBuilder.Entity("Emissor.Domain.Entities.Usuario", b =>
