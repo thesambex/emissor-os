@@ -13,7 +13,7 @@ Este projeto tem como propósito simular a emissão de ordens de serviço, nele 
   },
   "AllowedHosts": "*",
   "ConnectionStrings": {
-    "Postgresql": "Server=database;Port=5431;Username=postgres;Password=123456;Database=db_emissor_os"
+    "Postgresql": "Server=database;Port=5432;Username=postgres;Password=123456;Database=db_emissor_os"
   },
   "JwtSettings": {
     "Issuer": "http://localhost:7039",
