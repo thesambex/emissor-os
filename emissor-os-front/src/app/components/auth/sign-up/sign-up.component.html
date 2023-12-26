@@ -24,6 +24,8 @@
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="senha" type="password" formControlName="senha" minlength="6" maxlength="12" placeholder="Senha"
                     required />
+                <div *ngIf="!signUpForm.get('senha')?.valid && signUpForm.get('senha')?.dirty">A senha deve ter de 6 a 12
+                    caracteres</div>
             </div>
             <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="senha">Repita a senha</label>
@@ -31,8 +33,12 @@
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="rsenha" type="password" formControlName="rsenha" minlength="6" maxlength="12"
                     placeholder="Repita a Senha" required />
+                    <div *ngIf="!signUpForm.get('rsenha')?.valid && signUpForm.get('rsenha')?.dirty">A senha deve ter de 6 a 12
+                        caracteres</div>
             </div>
         </div>
+
+        <div class="mb-4" *ngIf="errorMsg != null">{{errorMsg}}</div>
 
         <button
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
