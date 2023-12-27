@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Emissor.Infra.Migrations
 {
     [DbContext(typeof(PgContext))]
-    [Migration("20231226174530_Inicial")]
+    [Migration("20231227141638_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -79,6 +79,48 @@ namespace Emissor.Infra.Migrations
                     b.ToTable("clientes", "clientes");
                 });
 
+            modelBuilder.Entity("Emissor.Domain.Entities.Mercadoria", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<string>("CodigoBarra")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("codigo_barra");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("descricao");
+
+                    b.Property<double>("Preco")
+                        .HasColumnType("DECIMAL(8,2)")
+                        .HasColumnName("preco");
+
+                    b.Property<string>("Referencia")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("referencia");
+
+                    b.Property<int>("Unidade")
+                        .HasColumnType("tipo_unidades")
+                        .HasColumnName("unidade");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Referencia")
+                        .IsUnique();
+
+                    b.ToTable("mercadorias", "estoque");
+                });
+
             modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
                 {
                     b.Property<Guid>("Id")
@@ -116,12 +158,20 @@ namespace Emissor.Infra.Migrations
                         .HasColumnType("text")
                         .HasColumnName("observacoes");
 
+                    b.Property<double>("ValorFinal")
+                        .HasColumnType("DECIMAL(10,2)")
+                        .HasColumnName("valor_final");
+
+                    b.Property<double>("ValorHora")
+                        .HasColumnType("DECIMAL(8,2)")
+                        .HasColumnName("valor_hora");
+
                     b.HasKey("Id");
 
-                    b.ToTable("ordems_servico", "ordens_servico");
+                    b.ToTable("ordens_servico", "ordens_servico");
                 });
 
-            modelBuilder.Entity("Emissor.Domain.Entities.Produto", b =>
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServicoMercadoria", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,34 +179,26 @@ namespace Emissor.Infra.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
-                    b.Property<string>("CodigoBarra")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("character varying(13)")
-                        .HasColumnName("codigo_barra");
+                    b.Property<Guid>("OrdemServicoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ordem_servico_id");
 
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)")
-                        .HasColumnName("descricao");
+                    b.Property<Guid>("ProdutoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("produto_id");
 
-                    b.Property<string>("Referencia")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("referencia");
-
-                    b.Property<int>("Unidade")
-                        .HasColumnType("tipo_unidades")
-                        .HasColumnName("unidade");
+                    b.Property<double>("Quantidade")
+                        .HasColumnType("DECIMAL(7,2)")
+                        .HasColumnName("quantidade");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Referencia")
+                    b.HasIndex("OrdemServicoId");
+
+                    b.HasIndex("ProdutoId")
                         .IsUnique();
 
-                    b.ToTable("produtos", "estoque");
+                    b.ToTable("ordens_servico_mercadoias", "ordens_servico");
                 });
 
             modelBuilder.Entity("Emissor.Domain.Entities.Usuario", b =>
@@ -191,6 +233,35 @@ namespace Emissor.Infra.Migrations
                         .IsUnique();
 
                     b.ToTable("usuarios", "usuarios");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServicoMercadoria", b =>
+                {
+                    b.HasOne("Emissor.Domain.Entities.OrdemServico", "OrdemServico")
+                        .WithMany("OrdemServicoMercadorias")
+                        .HasForeignKey("OrdemServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Emissor.Domain.Entities.Mercadoria", "Produto")
+                        .WithOne("OrdemServicoMercadoria")
+                        .HasForeignKey("Emissor.Domain.Entities.OrdemServicoMercadoria", "ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrdemServico");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.Mercadoria", b =>
+                {
+                    b.Navigation("OrdemServicoMercadoria");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
+                {
+                    b.Navigation("OrdemServicoMercadorias");
                 });
 #pragma warning restore 612, 618
         }

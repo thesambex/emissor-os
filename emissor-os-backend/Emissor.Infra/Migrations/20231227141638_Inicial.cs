@@ -15,10 +15,10 @@ namespace Emissor.Infra.Migrations
                 name: "clientes");
 
             migrationBuilder.EnsureSchema(
-                name: "ordens_servico");
+                name: "estoque");
 
             migrationBuilder.EnsureSchema(
-                name: "estoque");
+                name: "ordens_servico");
 
             migrationBuilder.EnsureSchema(
                 name: "usuarios");
@@ -47,7 +47,24 @@ namespace Emissor.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ordems_servico",
+                name: "mercadorias",
+                schema: "estoque",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    descricao = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    referencia = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    codigo_barra = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
+                    preco = table.Column<double>(type: "numeric(8,2)", nullable: false),
+                    unidade = table.Column<int>(type: "tipo_unidades", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_mercadorias", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ordens_servico",
                 schema: "ordens_servico",
                 columns: table => new
                 {
@@ -57,28 +74,14 @@ namespace Emissor.Infra.Migrations
                     atendente_id = table.Column<Guid>(type: "uuid", nullable: false),
                     descricao = table.Column<string>(type: "text", nullable: false),
                     observacoes = table.Column<string>(type: "text", nullable: true),
+                    valor_hora = table.Column<double>(type: "numeric(8,2)", nullable: false),
+                    valor_final = table.Column<double>(type: "numeric(10,2)", nullable: false),
                     dt_inicio = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
                     dt_fim = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ordems_servico", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "produtos",
-                schema: "estoque",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    descricao = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
-                    referencia = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    codigo_barra = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
-                    unidade = table.Column<int>(type: "tipo_unidades", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_produtos", x => x.id);
+                    table.PrimaryKey("PK_ordens_servico", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,6 +99,35 @@ namespace Emissor.Infra.Migrations
                     table.PrimaryKey("PK_usuarios", x => x.id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ordens_servico_mercadoias",
+                schema: "ordens_servico",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    produto_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ordem_servico_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    quantidade = table.Column<double>(type: "numeric(7,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ordens_servico_mercadoias", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ordens_servico_mercadoias_mercadorias_produto_id",
+                        column: x => x.produto_id,
+                        principalSchema: "estoque",
+                        principalTable: "mercadorias",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ordens_servico_mercadoias_ordens_servico_ordem_servico_id",
+                        column: x => x.ordem_servico_id,
+                        principalSchema: "ordens_servico",
+                        principalTable: "ordens_servico",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_clientes_documento",
                 schema: "clientes",
@@ -104,10 +136,23 @@ namespace Emissor.Infra.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_produtos_referencia",
+                name: "IX_mercadorias_referencia",
                 schema: "estoque",
-                table: "produtos",
+                table: "mercadorias",
                 column: "referencia",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ordens_servico_mercadoias_ordem_servico_id",
+                schema: "ordens_servico",
+                table: "ordens_servico_mercadoias",
+                column: "ordem_servico_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ordens_servico_mercadoias_produto_id",
+                schema: "ordens_servico",
+                table: "ordens_servico_mercadoias",
+                column: "produto_id",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -126,16 +171,20 @@ namespace Emissor.Infra.Migrations
                 schema: "clientes");
 
             migrationBuilder.DropTable(
-                name: "ordems_servico",
+                name: "ordens_servico_mercadoias",
                 schema: "ordens_servico");
-
-            migrationBuilder.DropTable(
-                name: "produtos",
-                schema: "estoque");
 
             migrationBuilder.DropTable(
                 name: "usuarios",
                 schema: "usuarios");
+
+            migrationBuilder.DropTable(
+                name: "mercadorias",
+                schema: "estoque");
+
+            migrationBuilder.DropTable(
+                name: "ordens_servico",
+                schema: "ordens_servico");
         }
     }
 }

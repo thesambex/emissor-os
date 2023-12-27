@@ -15,7 +15,11 @@ public class OrdemServico
     public Guid AtendenteId { get; set; }
     public string Descricao { get; set; }
     public string? Observacoes { get; set; }
+    public double ValorHora { get; set; }
+    public double ValorFinal { get; set; }
     public DateTime DtInicio { get; set; }
     public DateTime? DtFim { get; set; }
+
+    public ICollection<OrdemServicoMercadoria>? OrdemServicoMercadorias { get; set; }
 
 }

@@ -15,8 +15,9 @@ public class PgContext : DbContext
 
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
-    public DbSet<Produto> Produtos { get; set; }
+    public DbSet<Mercadoria> Produtos { get; set; }
     public DbSet<OrdemServico> OrdemServicos { get; set; }
+    public DbSet<OrdemServicoMercadoria> OrdemServicoMercadorias { get; set; }
 
     public PgContext(DbContextOptions<PgContext> options) 
         : base(options)
@@ -32,8 +33,9 @@ public class PgContext : DbContext
         
         builder.ApplyConfiguration(new UsuarioMapping());
         builder.ApplyConfiguration(new ClienteMapping());
-        builder.ApplyConfiguration(new ProdutoMapping());
+        builder.ApplyConfiguration(new MercadoriaMapping());
         builder.ApplyConfiguration(new OrdemServicoMapping());
+        builder.ApplyConfiguration(new OrdemServicoMercadoriaMapping());
     }
 
 }
