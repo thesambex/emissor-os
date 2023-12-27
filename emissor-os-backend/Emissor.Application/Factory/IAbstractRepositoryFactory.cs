@@ -10,4 +10,5 @@ namespace Emissor.Application.Factory;
 public interface IAbstractRepositoryFactory
 {
     IUsuariosRepository CreateUsuariosRepository();
+    IClientesRepository CreateClientesRepository();
 }

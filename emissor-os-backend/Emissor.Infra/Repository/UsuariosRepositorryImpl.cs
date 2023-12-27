@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Emissor.Infra.Repository;
 
-public class UsuariosRepositorryImpl : IUsuariosRepository
+internal class UsuariosRepositorryImpl : IUsuariosRepository
 {
 
     private readonly PgContext _pgContext;

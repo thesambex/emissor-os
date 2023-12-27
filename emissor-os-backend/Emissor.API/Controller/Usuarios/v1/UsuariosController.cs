@@ -27,30 +27,21 @@ public class UsuariosController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CriarUsuario(CriarUsuarioDTO body)
-    {
-        return await _usuariosService.CriarUsuario(body);
-    }
+    public async Task<IActionResult> CriarUsuario(CriarUsuarioDTO body) => await _usuariosService.CriarUsuario(body);
 
     [HttpGet]
     [Route("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UsuarioDTO))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUsuario(Guid id)
-    {
-        return await _usuariosService.GetUsuarioById(id);
-    }
+    public async Task<IActionResult> GetUsuario(Guid id) => await _usuariosService.GetUsuarioById(id);
 
     [HttpGet]
     [Route("username/{username}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UsuarioDTO))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUsuarioByUsername(string username)
-    {
-        return await _usuariosService.GetUsuarioByNomeUsuario(username);
-    }
+    public async Task<IActionResult> GetUsuarioByUsername(string username) => await _usuariosService.GetUsuarioByNomeUsuario(username);
 
     [HttpDelete]
     [Route("{id}")]
@@ -58,10 +49,7 @@ public class UsuariosController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeletarUsuarioById(Guid id)
-    {
-        return await _usuariosService.Deletar(id);
-    }
+    public async Task<IActionResult> DeletarUsuarioById(Guid id) => await _usuariosService.Deletar(id);
 
     [HttpPut]
     [Route("{id}")]
@@ -70,9 +58,6 @@ public class UsuariosController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AtualizarUsuario(Guid id, AtualizarUsuarioDTO body)
-    {
-        return await _usuariosService.Atualizar(id, body);
-    }
+    public async Task<IActionResult> AtualizarUsuario(Guid id, AtualizarUsuarioDTO body) => await _usuariosService.Atualizar(id, body);
 
 }

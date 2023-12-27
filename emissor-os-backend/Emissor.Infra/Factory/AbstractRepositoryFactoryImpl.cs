@@ -20,9 +20,8 @@ public class AbstractRepositoryFactoryImpl : IAbstractRepositoryFactory
         _pgContext = pgContext;
     }
 
-    public IUsuariosRepository CreateUsuariosRepository()
-    {
-        return new UsuariosRepositorryImpl(_pgContext);
-    }
+    public IUsuariosRepository CreateUsuariosRepository() => new UsuariosRepositorryImpl(_pgContext);
+
+    public IClientesRepository CreateClientesRepository() => new ClientesRepositoryImpl(_pgContext);
 
 }

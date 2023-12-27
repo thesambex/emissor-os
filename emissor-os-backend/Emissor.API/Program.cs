@@ -70,6 +70,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWorkImpl>();
 builder.Services.AddTransient<IAbstractRepositoryFactory, AbstractRepositoryFactoryImpl>();
 builder.Services.AddScoped<IUsuariosService, UsuariosServiceImpl>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
+builder.Services.AddScoped<IClientesService, ClienteServiceImpl>();
 
 var app = builder.Build();
 
