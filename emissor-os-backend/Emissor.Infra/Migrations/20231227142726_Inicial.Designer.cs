@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Emissor.Infra.Migrations
 {
     [DbContext(typeof(PgContext))]
-    [Migration("20231227141638_Inicial")]
+    [Migration("20231227142726_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -168,6 +168,11 @@ namespace Emissor.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AtendenteId");
+
+                    b.HasIndex("ClienteId")
+                        .IsUnique();
+
                     b.ToTable("ordens_servico", "ordens_servico");
                 });
 
@@ -235,6 +240,25 @@ namespace Emissor.Infra.Migrations
                     b.ToTable("usuarios", "usuarios");
                 });
 
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
+                {
+                    b.HasOne("Emissor.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("OrdensServicos")
+                        .HasForeignKey("AtendenteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Emissor.Domain.Entities.Cliente", "Cliente")
+                        .WithOne("OrdemServico")
+                        .HasForeignKey("Emissor.Domain.Entities.OrdemServico", "ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Emissor.Domain.Entities.OrdemServicoMercadoria", b =>
                 {
                     b.HasOne("Emissor.Domain.Entities.OrdemServico", "OrdemServico")
@@ -254,6 +278,11 @@ namespace Emissor.Infra.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("Emissor.Domain.Entities.Cliente", b =>
+                {
+                    b.Navigation("OrdemServico");
+                });
+
             modelBuilder.Entity("Emissor.Domain.Entities.Mercadoria", b =>
                 {
                     b.Navigation("OrdemServicoMercadoria");
@@ -262,6 +291,11 @@ namespace Emissor.Infra.Migrations
             modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
                 {
                     b.Navigation("OrdemServicoMercadorias");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.Usuario", b =>
+                {
+                    b.Navigation("OrdensServicos");
                 });
 #pragma warning restore 612, 618
         }

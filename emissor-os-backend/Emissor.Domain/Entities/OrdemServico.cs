@@ -20,6 +20,8 @@ public class OrdemServico
     public DateTime DtInicio { get; set; }
     public DateTime? DtFim { get; set; }
 
+    public Cliente? Cliente { get; set; }
+    public Usuario? Usuario { get; set; }
     public ICollection<OrdemServicoMercadoria>? OrdemServicoMercadorias { get; set; }
 
 }

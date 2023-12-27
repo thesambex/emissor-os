@@ -64,6 +64,21 @@ namespace Emissor.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "usuarios",
+                schema: "usuarios",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    nome = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    nome_usuario = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    senha = table.Column<string>(type: "character varying(72)", maxLength: 72, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_usuarios", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ordens_servico",
                 schema: "ordens_servico",
                 columns: table => new
@@ -82,21 +97,20 @@ namespace Emissor.Infra.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ordens_servico", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "usuarios",
-                schema: "usuarios",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    nome = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
-                    nome_usuario = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    senha = table.Column<string>(type: "character varying(72)", maxLength: 72, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_usuarios", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ordens_servico_clientes_cliente_id",
+                        column: x => x.cliente_id,
+                        principalSchema: "clientes",
+                        principalTable: "clientes",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ordens_servico_usuarios_atendente_id",
+                        column: x => x.atendente_id,
+                        principalSchema: "usuarios",
+                        principalTable: "usuarios",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,6 +157,19 @@ namespace Emissor.Infra.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ordens_servico_atendente_id",
+                schema: "ordens_servico",
+                table: "ordens_servico",
+                column: "atendente_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ordens_servico_cliente_id",
+                schema: "ordens_servico",
+                table: "ordens_servico",
+                column: "cliente_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ordens_servico_mercadoias_ordem_servico_id",
                 schema: "ordens_servico",
                 table: "ordens_servico_mercadoias",
@@ -167,16 +194,8 @@ namespace Emissor.Infra.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "clientes",
-                schema: "clientes");
-
-            migrationBuilder.DropTable(
                 name: "ordens_servico_mercadoias",
                 schema: "ordens_servico");
-
-            migrationBuilder.DropTable(
-                name: "usuarios",
-                schema: "usuarios");
 
             migrationBuilder.DropTable(
                 name: "mercadorias",
@@ -185,6 +204,14 @@ namespace Emissor.Infra.Migrations
             migrationBuilder.DropTable(
                 name: "ordens_servico",
                 schema: "ordens_servico");
+
+            migrationBuilder.DropTable(
+                name: "clientes",
+                schema: "clientes");
+
+            migrationBuilder.DropTable(
+                name: "usuarios",
+                schema: "usuarios");
         }
     }
 }
