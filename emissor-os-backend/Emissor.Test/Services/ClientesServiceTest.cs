@@ -20,7 +20,7 @@ public class ClientesServiceTest : IDisposable
 {
 
     private readonly PgContext pgContext;
-    private readonly IClientesService clienesService;
+    private readonly IClientesService clientesService;
 
     public ClientesServiceTest()
     {
@@ -36,7 +36,7 @@ public class ClientesServiceTest : IDisposable
         pgContext = new PgContext(dbOptions.Options);
 
         var logger = new Mock<ILogger<ClienteServiceImpl>>();
-        clienesService = new ClienteServiceImpl(logger.Object, new AbstractRepositoryFactoryImpl(pgContext));
+        clientesService = new ClienteServiceImpl(logger.Object, new AbstractRepositoryFactoryImpl(pgContext));
     }
 
     public void Dispose()
@@ -58,7 +58,7 @@ public class ClientesServiceTest : IDisposable
                 false
         );
 
-        var result = await clienesService.CriarCliente(dto);
+        var result = await clientesService.CriarCliente(dto);
 
         Assert.NotNull(result);
         Assert.IsType<CreatedAtActionResult>(result);
@@ -67,13 +67,31 @@ public class ClientesServiceTest : IDisposable
     [Fact]
     public async void Deve_Obter_Um_Cliente()
     {
-        var response = await clienesService.GetClienteById(Guid.Parse("6b357767-0064-4fe3-bdaa-795bbfe7563e"));
+        var response = await clientesService.GetClienteById(Guid.Parse("6b357767-0064-4fe3-bdaa-795bbfe7563e"));
 
         Assert.NotNull(response);
         Assert.IsType<OkObjectResult>(response);
 
         var payload = ((OkObjectResult)response).Value as ClienteDTO;
         Assert.NotNull(payload);
+    }
+
+    [Fact(Skip = "Não é necessário deletar no momento")]
+    public async void Deve_Deletar_Um_CLiente()
+    {
+        var response = await clientesService.DeletarCliente(Guid.Parse("6b357767-0064-4fe3-bdaa-795bbfe7563e"));
+
+        Assert.NotNull(response);
+        Assert.IsType<NoContentResult>(response);
+    }
+
+    [Fact]
+    public async void Deve_Buscar_Um_Cliente()
+    {
+        var response = await clientesService.BuscarCliente("123");
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
     }
 
 }

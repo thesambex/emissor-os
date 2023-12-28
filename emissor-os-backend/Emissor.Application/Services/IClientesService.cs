@@ -12,4 +12,6 @@ public interface IClientesService
 {
     Task<IActionResult> CriarCliente(ClienteDTO body);
     Task<IActionResult> GetClienteById(Guid id);
+    Task<IActionResult> DeletarCliente(Guid id);
+    Task<IActionResult> BuscarCliente(string query);
 }

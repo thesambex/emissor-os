@@ -99,14 +99,13 @@ public class UsuariosServiceImpl : IUsuariosService
         try
         {
             await _usuariosRepository.DeletarUsuario(id);
+            return new NoContentResult();
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao deletar o usuário ${id} {ex.InnerException}", ex);
+            _logger.LogError($"Falha ao deletar o usuário ${id} - {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
-
-        return new NoContentResult();
     }
 
     public async Task<IActionResult> GetUsuarioById(Guid id)

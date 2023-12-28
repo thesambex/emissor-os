@@ -35,4 +35,17 @@ public class ClientesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetCliente(Guid id) => await _clientesService.GetClienteById(id);
 
+    [HttpDelete]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeletarCliente(Guid id) => await _clientesService.DeletarCliente(id);
+
+    [HttpGet]
+    [Route("buscar")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ClienteBuscaDTO>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> BuscarCliente([FromQuery] string query) => await _clientesService.BuscarCliente(query);
+
 }

@@ -31,7 +31,7 @@ public class ClienteServiceImpl : IClientesService
     {
         try
         {
-            if(await _clientesRepository.IssetClienteByDocumento(body.Documento)) 
+            if (await _clientesRepository.IssetClienteByDocumento(body.Documento))
             {
                 return new ObjectResult(new ErrorResponseDTO("Já existe um cliente cadastrado com este documento", "documento", null))
                 {
@@ -87,6 +87,33 @@ public class ClienteServiceImpl : IClientesService
         catch (Exception ex)
         {
             _logger.LogError($"Falha ao obter o cliente ${ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> DeletarCliente(Guid id)
+    {
+        try
+        {
+            await _clientesRepository.DeletarCliente(id);
+            return new NoContentResult();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao deletar o cliente ${id} - ${ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> BuscarCliente(string query)
+    {
+        try
+        {
+            return new OkObjectResult(await _clientesRepository.BuscarCliente(query));
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError($"Falha ao buscar o cliente ${ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

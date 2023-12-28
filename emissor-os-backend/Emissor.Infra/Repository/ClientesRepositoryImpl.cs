@@ -1,5 +1,6 @@
 ﻿using Emissor.Application.Database;
 using Emissor.Application.Repository;
+using Emissor.Domain.DTOs.Clientes;
 using Emissor.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -30,5 +31,20 @@ internal class ClientesRepositoryImpl : IClientesRepository
     public async Task<Cliente?> GetClienteById(Guid id) => await _pgContext.Clientes.FindAsync(id);
 
     public async Task<bool> IssetClienteByDocumento(string documento) => await _pgContext.Clientes.CountAsync(e => e.Documento.Equals(documento)) > 0;
+
+    public async Task<List<ClienteBuscaDTO>> BuscarCliente(string query)
+        => await _pgContext.Clientes.Where(e => e.Nome.StartsWith(query) || e.Documento.StartsWith(query))
+        .Select(e => new ClienteBuscaDTO(e.Id, e.Nome, e.Documento))
+        .ToListAsync();
+    
+    public async Task DeletarCliente(Guid id)
+    {
+        var cliente = await _pgContext.Clientes.FindAsync(id);
+        if(cliente != null)
+        {
+            _pgContext.Clientes.Remove(cliente);
+            await _pgContext.SaveChangesAsync();
+        }
+    }
 
 }
