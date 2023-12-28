@@ -29,5 +29,6 @@ public record ClienteDTO(
     [StringLength(maximumLength:60, ErrorMessage = "O município deve conter até 60 caracteres")]
     string Municipio,
     [Required(ErrorMessage = "Informe se é PJ ou não")]
+    [property:JsonPropertyName("is_pj")]
     bool IsPJ
 );
