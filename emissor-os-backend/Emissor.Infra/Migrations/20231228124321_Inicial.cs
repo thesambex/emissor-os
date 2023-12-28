@@ -36,10 +36,10 @@ namespace Emissor.Infra.Migrations
                     nome = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     documento = table.Column<string>(type: "character varying(14)", maxLength: 14, nullable: false),
                     endereco = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
-                    endereco_numero = table.Column<int>(type: "integer", nullable: false),
-                    bairro = table.Column<string>(type: "text", nullable: false),
-                    municipio = table.Column<string>(type: "text", nullable: false),
-                    is_pj = table.Column<bool>(type: "boolean", nullable: false)
+                    endereco_numero = table.Column<int>(type: "INTEGER", nullable: false),
+                    bairro = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    municipio = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    is_pj = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {

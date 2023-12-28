@@ -19,10 +19,10 @@ internal class ClienteMapping : IEntityTypeConfiguration<Cliente>
         builder.Property(e => e.Documento).HasColumnName("documento").HasMaxLength(14).IsRequired();
         builder.HasIndex(e => e.Documento).IsUnique();
         builder.Property(e => e.Endereco).HasColumnName("endereco").HasMaxLength(60).IsRequired();
-        builder.Property(e => e.EnderecoNumero).HasColumnName("endereco_numero");
-        builder.Property(e => e.Bairro).HasColumnName("bairro");
-        builder.Property(e => e.Municipio).HasColumnName("municipio");
-        builder.Property(e => e.IsPJ).HasColumnName("is_pj");
+        builder.Property(e => e.EnderecoNumero).HasColumnName("endereco_numero").HasColumnType("INTEGER");
+        builder.Property(e => e.Bairro).HasColumnName("bairro").HasMaxLength(60).IsRequired();
+        builder.Property(e => e.Municipio).HasColumnName("municipio").HasMaxLength(60).IsRequired();
+        builder.Property(e => e.IsPJ).HasColumnName("is_pj").IsRequired().HasDefaultValue(false);
     }
 
 }

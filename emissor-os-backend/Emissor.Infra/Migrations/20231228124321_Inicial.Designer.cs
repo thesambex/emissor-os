@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Emissor.Infra.Migrations
 {
     [DbContext(typeof(PgContext))]
-    [Migration("20231227142726_Inicial")]
+    [Migration("20231228124321_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -37,7 +37,8 @@ namespace Emissor.Infra.Migrations
 
                     b.Property<string>("Bairro")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
                         .HasColumnName("bairro");
 
                     b.Property<string>("Documento")
@@ -53,16 +54,19 @@ namespace Emissor.Infra.Migrations
                         .HasColumnName("endereco");
 
                     b.Property<int>("EnderecoNumero")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("endereco_numero");
 
                     b.Property<bool>("IsPJ")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("is_pj");
 
                     b.Property<string>("Municipio")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
                         .HasColumnName("municipio");
 
                     b.Property<string>("Nome")
