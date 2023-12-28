@@ -47,16 +47,16 @@ public class ClientesServiceTest : IDisposable
     [Fact]
     public async void Deve_Cadastrar_Um_Novo_Cliente()
     {
-        var dto = new CriarClienteDTO() 
-        {
-            Nome = "Roberto J Doe",
-            Documento = "123.456.789-10",
-            Endereco = "Rua 1",
-            EnderecoNumero = 10,
-            Bairro = "Alamedas",
-            Municipio = "São Paulo",
-            IsPJ = false,
-        };
+        var dto = new ClienteDTO(
+                null,
+                "Roberto J Doe",
+                "123.456.789-11",
+                "Rua 1",
+                10,
+                "Alamedas",
+                "São Paulo",
+                false
+        );
 
         var result = await clienesService.CriarCliente(dto);
 

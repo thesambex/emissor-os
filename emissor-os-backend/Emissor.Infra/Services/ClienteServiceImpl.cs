@@ -26,7 +26,7 @@ public class ClienteServiceImpl : IClientesService
         _clientesRepository = abstractRepositoryFactory.CreateClientesRepository();
     }
 
-    public async Task<IActionResult> CriarCliente(CriarClienteDTO body)
+    public async Task<IActionResult> CriarCliente(ClienteDTO body)
     {
         try
         {
@@ -43,16 +43,16 @@ public class ClienteServiceImpl : IClientesService
 
             cliente = await _clientesRepository.CriarCliente(cliente);
 
-            var response = new CriarClienteDTO()
-            {
-                Nome = cliente.Nome,
-                Documento = cliente.Documento,
-                Endereco = cliente.Endereco,
-                EnderecoNumero = body.EnderecoNumero,
-                Bairro = cliente.Bairro,
-                Municipio = cliente.Municipio,
-                IsPJ = cliente.IsPJ
-            };
+            var response = new ClienteDTO(
+                cliente.Id,
+                cliente.Nome,
+                cliente.Documento,
+                cliente.Endereco,
+                cliente.EnderecoNumero,
+                cliente.Bairro,
+                cliente.Municipio,
+                cliente.IsPJ
+            );
 
             return new CreatedAtActionResult("GetCliente", null, new { id = response.Id }, response);
         }

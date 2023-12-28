@@ -10,5 +10,5 @@ namespace Emissor.Application.Services;
 
 public interface IClientesService
 {
-    Task<IActionResult> CriarCliente(CriarClienteDTO body);
+    Task<IActionResult> CriarCliente(ClienteDTO body);
 }

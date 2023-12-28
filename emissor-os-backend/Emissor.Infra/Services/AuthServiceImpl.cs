@@ -37,7 +37,7 @@ public class AuthServiceImpl : IAuthService
 
     public async Task<IActionResult> SignIn(SignInDTO body)
     {
-        try 
+        try
         {
             var usuario = await _usuariosRepository.GetUsuarioByNomeUsuario(body.NomeUsuario);
             if (usuario == null)
@@ -61,12 +61,7 @@ public class AuthServiceImpl : IAuthService
                 signingCredentials: credentials!
                 );
 
-            var response = new TokenDTO()
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token)
-            };
-
-            return new OkObjectResult(response);
+            return new OkObjectResult(new TokenDTO(new JwtSecurityTokenHandler().WriteToken(token)));
         }
         catch (Exception ex)
         {
@@ -79,7 +74,7 @@ public class AuthServiceImpl : IAuthService
     {
         if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
         {
-            return new ObjectResult(new ErrorResponseDTO() { Message = "Já existe um usuário com este nome de usuário", Field = "nome_usuario" })
+            return new ObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null))
             {
                 StatusCode = StatusCodes.Status409Conflict
             };
