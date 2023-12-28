@@ -48,7 +48,7 @@ public class UsuariosServiceTest : IDisposable
     [Fact]
     public async void Deve_Cadastrar_Um_Novo_Usuario()
     {
-        var usuario = new CriarUsuarioDTO(null, "Manoel Felix", "manoel", "1$23456Tr");
+        var usuario = new CriarUsuarioDTO(null, "José Dores", "dosed", "J@s123");
         var result = await usuariosService.CriarUsuario(usuario);
 
         Assert.NotNull(result);

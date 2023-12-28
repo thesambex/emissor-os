@@ -10,4 +10,6 @@ namespace Emissor.Application.Repository;
 public interface IClientesRepository
 {
     Task<Cliente> CriarCliente(Cliente cliente);
+    Task<Cliente?> GetClienteById(Guid id);
+    Task<bool> IssetClienteByDocumento(string documento);
 }

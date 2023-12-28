@@ -50,7 +50,7 @@ public class ClientesServiceTest : IDisposable
         var dto = new ClienteDTO(
                 null,
                 "Roberto J Doe",
-                "123.456.789-11",
+                "123.456.789-16",
                 "Rua 1",
                 10,
                 "Alamedas",
@@ -62,6 +62,18 @@ public class ClientesServiceTest : IDisposable
 
         Assert.NotNull(result);
         Assert.IsType<CreatedAtActionResult>(result);
+    }
+
+    [Fact]
+    public async void Deve_Obter_Um_Cliente()
+    {
+        var response = await clienesService.GetClienteById(Guid.Parse("6b357767-0064-4fe3-bdaa-795bbfe7563e"));
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+
+        var payload = ((OkObjectResult)response).Value as ClienteDTO;
+        Assert.NotNull(payload);
     }
 
 }

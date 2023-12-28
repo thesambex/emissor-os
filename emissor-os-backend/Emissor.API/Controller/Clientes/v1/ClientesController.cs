@@ -28,4 +28,11 @@ public class ClientesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CriarCliente(ClienteDTO body) => await _clientesService.CriarCliente(body);
 
+    [HttpGet]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ClienteDTO))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetCliente(Guid id) => await _clientesService.GetClienteById(id);
+
 }

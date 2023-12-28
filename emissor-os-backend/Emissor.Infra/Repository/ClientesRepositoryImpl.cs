@@ -1,6 +1,7 @@
 ﻿using Emissor.Application.Database;
 using Emissor.Application.Repository;
 using Emissor.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,9 @@ internal class ClientesRepositoryImpl : IClientesRepository
         await _pgContext.SaveChangesAsync();
         return cliente;
     }
+
+    public async Task<Cliente?> GetClienteById(Guid id) => await _pgContext.Clientes.FindAsync(id);
+
+    public async Task<bool> IssetClienteByDocumento(string documento) => await _pgContext.Clientes.CountAsync(e => e.Documento.Equals(documento)) > 0;
 
 }

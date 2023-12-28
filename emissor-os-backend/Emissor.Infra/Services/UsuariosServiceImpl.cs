@@ -31,33 +31,31 @@ public class UsuariosServiceImpl : IUsuariosService
 
     public async Task<IActionResult> CriarUsuario(CriarUsuarioDTO body)
     {
-
-        if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
-        {
-            return new ObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null))
-            {
-                StatusCode = StatusCodes.Status409Conflict
-            };
-        }
-
-        var usuario = new Usuario();
-        usuario.Nome = body.Nome;
-        usuario.NomeUsuario = body.NomeUsuario;
-
         try
         {
+            if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
+            {
+                return new ObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null))
+                {
+                    StatusCode = StatusCodes.Status409Conflict
+                };
+            }
+
+            var usuario = new Usuario();
+            usuario.Nome = body.Nome;
+            usuario.NomeUsuario = body.NomeUsuario;
             usuario.Senha = passwordHashing.GenerateHash(body.Senha!);
             usuario = await _usuariosRepository.CriarUsuario(usuario);
+
+            var response = new CriarUsuarioDTO(usuario.Id, usuario.Nome, usuario.NomeUsuario, null);
+
+            return new CreatedAtActionResult("GetUsuario", null, new { id = response.Id }, response);
         }
         catch (Exception ex)
         {
             _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
-
-        var response = new CriarUsuarioDTO(usuario.Id, usuario.Nome, usuario.NomeUsuario, null);
-
-        return new CreatedAtActionResult("GetUsuario", null, new { id = response.Id }, response);
     }
 
     public async Task<IActionResult> Atualizar(Guid id, AtualizarUsuarioDTO body)

@@ -11,4 +11,5 @@ namespace Emissor.Application.Services;
 public interface IClientesService
 {
     Task<IActionResult> CriarCliente(ClienteDTO body);
+    Task<IActionResult> GetClienteById(Guid id);
 }

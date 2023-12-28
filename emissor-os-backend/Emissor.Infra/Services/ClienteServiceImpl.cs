@@ -2,6 +2,7 @@
 using Emissor.Application.Repository;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs.Clientes;
+using Emissor.Domain.DTOs.Standard;
 using Emissor.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,14 @@ public class ClienteServiceImpl : IClientesService
     {
         try
         {
+            if(await _clientesRepository.IssetClienteByDocumento(body.Documento)) 
+            {
+                return new ObjectResult(new ErrorResponseDTO("Já existe um cliente cadastrado com este documento", "documento", null))
+                {
+                    StatusCode = StatusCodes.Status409Conflict
+                };
+            }
+
             var cliente = new Cliente()
             {
                 Nome = body.Nome,
@@ -59,6 +68,25 @@ public class ClienteServiceImpl : IClientesService
         catch (Exception ex)
         {
             _logger.LogError($"Falha ao cadastrar o cliente ${ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> GetClienteById(Guid id)
+    {
+        try
+        {
+            var cliente = await _clientesRepository.GetClienteById(id);
+            if (cliente == null)
+            {
+                return new NotFoundResult();
+            }
+
+            return new OkObjectResult(new ClienteDTO(cliente.Id, cliente.Nome, cliente.Documento, cliente.Endereco, cliente.EnderecoNumero, cliente.Bairro, cliente.Municipio, cliente.IsPJ));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao obter o cliente ${ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
