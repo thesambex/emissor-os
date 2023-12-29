@@ -4,6 +4,7 @@ using Emissor.Application.Services;
 using Emissor.Domain.DTOs.Clientes;
 using Emissor.Domain.DTOs.Standard;
 using Emissor.Domain.Entities;
+using Emissor.Infra.Factory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,16 @@ public class ClienteServiceImpl : IClientesService
     {
         try
         {
-            if (await _clientesRepository.IssetClienteByDocumento(body.Documento))
+            var documentoValidator = PessoaDocumentoValidatorFactory.Create(body.Documento, body.IsPJ);
+            if (!documentoValidator.IsValido())
+            {
+                return new ObjectResult(new ErrorResponseDTO("Documento inválido", null, null))
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
+            if (await _clientesRepository.IssetClienteByDocumento(documentoValidator.GetDocumentoValido()))
             {
                 return new ObjectResult(new ErrorResponseDTO("Já existe um cliente cadastrado com este documento", "documento", null))
                 {
@@ -42,7 +52,7 @@ public class ClienteServiceImpl : IClientesService
             var cliente = new Cliente()
             {
                 Nome = body.Nome,
-                Documento = body.Documento,
+                Documento = documentoValidator.GetDocumentoValido(),
                 Endereco = body.Endereco,
                 EnderecoNumero = body.EnderecoNumero,
                 Bairro = body.Bairro,
