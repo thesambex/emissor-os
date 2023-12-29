@@ -1,5 +1,4 @@
 ﻿using Emissor.Application.Util;
-using Emissor.Domain.Erros;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,32 +19,25 @@ public class CPFDocumentoValidator : PessoaDocumentoValidator
 
     public override bool IsValido()
     {
-        if (Regex.IsMatch(document, @"^\d{3}\.\d{3}\.\d{3}-\d{2}$"))
+        if (Regex.IsMatch(documento, @"^\d{3}\.\d{3}\.\d{3}-\d{2}$"))
         {
-            document = Regex.Replace(document, "[.\\-]", "");
+            documento = Regex.Replace(documento, @"[^\d]", "");
         }
 
-        if(document.Length != 11)
-        {
-            throw new PessoaDocumentoException($"Tamanho inválido do documento ${document.Length}");
-        }
-
-        if (document.All(d => d == document[0]))
-        {
-            return false;
-        }
+        if(documento.Length != 11) return false;
+        if (documento.All(d => d == documento[0])) return false;
 
         return IsDVValido();
     }
 
-    public override string GetDocumentoValido() => document;
+    public override string GetDocumentoValido() => documento;
 
     private int CalcularDV1()
     {
         int soma = 0;
         for(int i = 0; i < 9; i++)
         {
-            soma += int.Parse(document[i].ToString()) * (10 - i);
+            soma += int.Parse(documento[i].ToString()) * (10 - i);
         }
 
         int resto = soma % 11;
@@ -57,7 +49,7 @@ public class CPFDocumentoValidator : PessoaDocumentoValidator
         int soma = 0;
         for (int i = 0; i < 10; i++)
         {
-            soma += int.Parse(document[i].ToString()) * (11 - i);
+            soma += int.Parse(documento[i].ToString()) * (11 - i);
         }
 
         int resto = soma % 11;
@@ -66,8 +58,8 @@ public class CPFDocumentoValidator : PessoaDocumentoValidator
 
     private bool IsDVValido()
     {
-        int dv1 = int.Parse(document[9].ToString());
-        int dv2 = int.Parse(document[10].ToString());
+        int dv1 = int.Parse(documento[9].ToString());
+        int dv2 = int.Parse(documento[10].ToString());
 
         return dv1 == CalcularDV1() && dv2 == CalcularDV2();
     }

@@ -9,11 +9,11 @@ namespace Emissor.Application.Util;
 public abstract class PessoaDocumentoValidator
 {
 
-    protected string document;
+    protected string documento;
 
-    public PessoaDocumentoValidator(string document)
+    public PessoaDocumentoValidator(string documento)
     {
-        this.document = document;
+        this.documento = documento;
     }
 
     public abstract bool IsValido();

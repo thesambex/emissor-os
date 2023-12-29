@@ -1,4 +1,5 @@
-﻿using Emissor.Infra.Factory;
+﻿using Emissor.Application.Util;
+using Emissor.Infra.Factory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ public class PessoaDocumentoTest
     [Fact]
     public void Deve_Retornar_Um_CPF_Valido()
     {
-        var validator = PessoaDocumentoValidatorFactory.Create("Coloque um CPF Válido", false);
+        var validator = PessoaDocumentoValidatorFactory.Create("Insira um CPF válido", false);
         Assert.True(validator.IsValido());
         Assert.Equal(11, validator.GetDocumentoValido().Length);
     }
@@ -29,6 +30,28 @@ public class PessoaDocumentoTest
     public void Deve_Retornar_Um_CPF_Invalido()
     {
         var validator = PessoaDocumentoValidatorFactory.Create("100.000.000-00", false);
+        Assert.False(validator.IsValido());
+    }
+
+    [Fact]
+    public void Deve_Retornar_Um_CNPJ_Invalido_Digitos_Iguais()
+    {
+        var validator = PessoaDocumentoValidatorFactory.Create("11.111.111/1111-11", true);
+        Assert.False(validator.IsValido());
+    }
+
+    [Fact]
+    public void Deve_Retornar_Um_CNPJ_Valido()
+    {
+        var validator = PessoaDocumentoValidatorFactory.Create("Insira um CNPJ válido", true);
+        Assert.True(validator.IsValido());
+        Assert.Equal(14, validator.GetDocumentoValido().Length);
+    }
+
+    [Fact]
+    public void Deve_Retornar_Um_CNPJ_Invalido()
+    {
+        var validator = PessoaDocumentoValidatorFactory.Create("1.234.567/8910-11", true);
         Assert.False(validator.IsValido());
     }
 
