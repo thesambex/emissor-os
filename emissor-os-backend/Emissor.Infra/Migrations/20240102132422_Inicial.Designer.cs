@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Emissor.Infra.Migrations
 {
     [DbContext(typeof(PgContext))]
-    [Migration("20231228124321_Inicial")]
+    [Migration("20240102132422_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -26,6 +26,8 @@ namespace Emissor.Infra.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "tipo_unidades", new[] { "unidade", "metro", "kilo", "litro" });
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.HasSequence("numero_os_seq");
 
             modelBuilder.Entity("Emissor.Domain.Entities.Cliente", b =>
                 {
@@ -146,17 +148,19 @@ namespace Emissor.Infra.Migrations
                         .HasColumnType("text")
                         .HasColumnName("descricao");
 
-                    b.Property<DateTime?>("DtFim")
+                    b.Property<DateTimeOffset?>("DtFim")
                         .HasColumnType("TIMESTAMPTZ")
                         .HasColumnName("dt_fim");
 
-                    b.Property<DateTime>("DtInicio")
+                    b.Property<DateTimeOffset>("DtInicio")
                         .HasColumnType("TIMESTAMPTZ")
                         .HasColumnName("dt_inicio");
 
                     b.Property<long>("Numero")
-                        .HasColumnType("SERIAL NOT NULL")
-                        .HasColumnName("numero");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("numero")
+                        .HasDefaultValueSql("nextval('numero_os_seq')");
 
                     b.Property<string>("Observacoes")
                         .HasColumnType("text")
@@ -174,8 +178,7 @@ namespace Emissor.Infra.Migrations
 
                     b.HasIndex("AtendenteId");
 
-                    b.HasIndex("ClienteId")
-                        .IsUnique();
+                    b.HasIndex("ClienteId");
 
                     b.ToTable("ordens_servico", "ordens_servico");
                 });
@@ -253,8 +256,8 @@ namespace Emissor.Infra.Migrations
                         .IsRequired();
 
                     b.HasOne("Emissor.Domain.Entities.Cliente", "Cliente")
-                        .WithOne("OrdemServico")
-                        .HasForeignKey("Emissor.Domain.Entities.OrdemServico", "ClienteId")
+                        .WithMany("OrdensServico")
+                        .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -284,7 +287,7 @@ namespace Emissor.Infra.Migrations
 
             modelBuilder.Entity("Emissor.Domain.Entities.Cliente", b =>
                 {
-                    b.Navigation("OrdemServico");
+                    b.Navigation("OrdensServico");
                 });
 
             modelBuilder.Entity("Emissor.Domain.Entities.Mercadoria", b =>

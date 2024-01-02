@@ -15,7 +15,7 @@ internal class OrdemServicoMapping : IEntityTypeConfiguration<OrdemServico>
     {
         builder.ToTable("ordens_servico", "ordens_servico");
         builder.Property(e => e.Id).HasColumnName("id").HasDefaultValueSql("uuid_generate_v4()");
-        builder.Property(e => e.Numero).HasColumnName("numero").HasColumnType("SERIAL NOT NULL");
+        builder.Property(e => e.Numero).HasColumnName("numero").HasDefaultValueSql("nextval('numero_os_seq')");
         builder.Property(e => e.ClienteId).HasColumnName("cliente_id").IsRequired();
         builder.Property(e => e.AtendenteId).HasColumnName("atendente_id").IsRequired();
         builder.Property(e => e.Descricao).HasColumnName("descricao").IsRequired();
@@ -24,7 +24,7 @@ internal class OrdemServicoMapping : IEntityTypeConfiguration<OrdemServico>
         builder.Property(e => e.ValorFinal).HasColumnName("valor_final").HasColumnType("DECIMAL(10,2)");
         builder.Property(e => e.DtInicio).HasColumnName("dt_inicio").HasColumnType("TIMESTAMPTZ").IsRequired();
         builder.Property(e => e.DtFim).HasColumnName("dt_fim").HasColumnType("TIMESTAMPTZ");
-        builder.HasOne(e => e.Cliente).WithOne(e => e.OrdemServico).HasForeignKey<OrdemServico>(e => e.ClienteId);
+        builder.HasOne(e => e.Cliente).WithMany(e => e.OrdensServico).HasForeignKey(e => e.ClienteId);
         builder.HasOne(e => e.Usuario).WithMany(e => e.OrdensServicos).HasForeignKey(e => e.AtendenteId);
     }
 

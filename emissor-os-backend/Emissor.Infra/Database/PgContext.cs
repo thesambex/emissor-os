@@ -28,7 +28,7 @@ public class PgContext : DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasPostgresExtension("uuid-ossp");
-
+        builder.HasSequence<long>("numero_os_seq");
         builder.HasPostgresEnum<TipoUnidades>(name: "tipo_unidades");
         
         builder.ApplyConfiguration(new UsuarioMapping());

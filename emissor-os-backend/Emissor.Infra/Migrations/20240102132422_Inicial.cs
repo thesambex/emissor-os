@@ -27,6 +27,9 @@ namespace Emissor.Infra.Migrations
                 .Annotation("Npgsql:Enum:tipo_unidades", "unidade,metro,kilo,litro")
                 .Annotation("Npgsql:PostgresExtension:uuid-ossp", ",,");
 
+            migrationBuilder.CreateSequence(
+                name: "numero_os_seq");
+
             migrationBuilder.CreateTable(
                 name: "clientes",
                 schema: "clientes",
@@ -84,15 +87,15 @@ namespace Emissor.Infra.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    numero = table.Column<long>(type: "SERIAL NOT NULL", nullable: false),
+                    numero = table.Column<long>(type: "bigint", nullable: false, defaultValueSql: "nextval('numero_os_seq')"),
                     cliente_id = table.Column<Guid>(type: "uuid", nullable: false),
                     atendente_id = table.Column<Guid>(type: "uuid", nullable: false),
                     descricao = table.Column<string>(type: "text", nullable: false),
                     observacoes = table.Column<string>(type: "text", nullable: true),
                     valor_hora = table.Column<double>(type: "numeric(8,2)", nullable: false),
                     valor_final = table.Column<double>(type: "numeric(10,2)", nullable: false),
-                    dt_inicio = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: false),
-                    dt_fim = table.Column<DateTime>(type: "TIMESTAMPTZ", nullable: true)
+                    dt_inicio = table.Column<DateTimeOffset>(type: "TIMESTAMPTZ", nullable: false),
+                    dt_fim = table.Column<DateTimeOffset>(type: "TIMESTAMPTZ", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -166,8 +169,7 @@ namespace Emissor.Infra.Migrations
                 name: "IX_ordens_servico_cliente_id",
                 schema: "ordens_servico",
                 table: "ordens_servico",
-                column: "cliente_id",
-                unique: true);
+                column: "cliente_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ordens_servico_mercadoias_ordem_servico_id",
@@ -212,6 +214,9 @@ namespace Emissor.Infra.Migrations
             migrationBuilder.DropTable(
                 name: "usuarios",
                 schema: "usuarios");
+
+            migrationBuilder.DropSequence(
+                name: "numero_os_seq");
         }
     }
 }
