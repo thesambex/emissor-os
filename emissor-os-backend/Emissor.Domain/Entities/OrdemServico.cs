@@ -17,8 +17,8 @@ public class OrdemServico
     public string? Observacoes { get; set; }
     public double ValorHora { get; set; }
     public double ValorFinal { get; set; }
-    public DateTime DtInicio { get; set; }
-    public DateTime? DtFim { get; set; }
+    public DateTimeOffset DtInicio { get; set; }
+    public DateTimeOffset? DtFim { get; set; }
 
     public Cliente? Cliente { get; set; }
     public Usuario? Usuario { get; set; }

@@ -97,6 +97,7 @@ builder.Services.AddTransient<IAbstractRepositoryFactory, AbstractRepositoryFact
 builder.Services.AddScoped<IUsuariosService, UsuariosServiceImpl>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 builder.Services.AddScoped<IClientesService, ClienteServiceImpl>();
+builder.Services.AddScoped<IOrdemServicoService, OrdemServicoServiceImpl>();
 
 var app = builder.Build();
 

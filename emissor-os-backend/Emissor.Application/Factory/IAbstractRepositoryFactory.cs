@@ -11,4 +11,5 @@ public interface IAbstractRepositoryFactory
 {
     IUsuariosRepository CreateUsuariosRepository();
     IClientesRepository CreateClientesRepository();
+    IOrdemServicoRepository CreateOrdemServicoRepository();
 }

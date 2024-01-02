@@ -18,5 +18,5 @@ public class Cliente
     public string Municipio { get; set; }
     public bool IsPJ { get; set; }
 
-    public OrdemServico? OrdemServico { get; set; }
+    public ICollection<OrdemServico>? OrdensServico { get; set; }
 }
