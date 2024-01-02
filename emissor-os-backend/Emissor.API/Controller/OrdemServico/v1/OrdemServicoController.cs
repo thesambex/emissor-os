@@ -3,6 +3,7 @@ using Emissor.Domain.DTOs.OrdemServico;
 using Emissor.Infra.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Emissor.API.Controller.OrdemServico.v1;
 
@@ -23,6 +24,9 @@ public class OrdemServicoController : ControllerBase
 
     [HttpPost]
     [Route("abrir")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AbrirOSDTO))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AbrirOS(AbrirOSDTO body)
     {
         try
@@ -45,6 +49,9 @@ public class OrdemServicoController : ControllerBase
 
     [HttpGet]
     [Route("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OSDTO))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetOrdemServico(Guid id) => await _ordemServicoService.GetOS(id);
 
 }
