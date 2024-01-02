@@ -24,8 +24,8 @@ internal class OrdemServicoMapping : IEntityTypeConfiguration<OrdemServico>
         builder.Property(e => e.ValorFinal).HasColumnName("valor_final").HasColumnType("DECIMAL(10,2)");
         builder.Property(e => e.DtInicio).HasColumnName("dt_inicio").HasColumnType("TIMESTAMPTZ").IsRequired();
         builder.Property(e => e.DtFim).HasColumnName("dt_fim").HasColumnType("TIMESTAMPTZ");
-        builder.HasOne(e => e.Cliente).WithMany(e => e.OrdensServico).HasForeignKey(e => e.ClienteId);
-        builder.HasOne(e => e.Usuario).WithMany(e => e.OrdensServicos).HasForeignKey(e => e.AtendenteId);
+        builder.HasOne(e => e.Cliente).WithMany(e => e.OrdensServico).HasForeignKey(e => e.ClienteId).HasPrincipalKey(e => e.Id).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(e => e.Usuario).WithMany(e => e.OrdensServicos).HasForeignKey(e => e.AtendenteId).HasPrincipalKey(e => e.Id).OnDelete(DeleteBehavior.Cascade);
     }
 
 }

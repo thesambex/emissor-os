@@ -18,8 +18,8 @@ internal class OrdemServicoMercadoriaMapping : IEntityTypeConfiguration<OrdemSer
         builder.Property(e => e.OrdemServicoId).HasColumnName("ordem_servico_id").IsRequired();
         builder.Property(e => e.ProdutoId).HasColumnName("produto_id").IsRequired();
         builder.Property(e => e.Quantidade).HasColumnName("quantidade").HasColumnType("DECIMAL(7,2)").IsRequired();
-        builder.HasOne(e => e.OrdemServico).WithMany(e => e.OrdemServicoMercadorias).HasForeignKey(e => e.OrdemServicoId);
-        builder.HasOne(e => e.Produto).WithOne(e => e.OrdemServicoMercadoria).HasForeignKey<OrdemServicoMercadoria>(e => e.ProdutoId);
+        builder.HasOne(e => e.OrdemServico).WithMany(e => e.OrdemServicoMercadorias).HasForeignKey(e => e.OrdemServicoId).HasPrincipalKey(e => e.Id).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(e => e.Produto).WithOne(e => e.OrdemServicoMercadoria).HasForeignKey<OrdemServicoMercadoria>(e => e.ProdutoId).HasPrincipalKey<Mercadoria>(e => e.Id).OnDelete(DeleteBehavior.Cascade);
     }
     
 }
