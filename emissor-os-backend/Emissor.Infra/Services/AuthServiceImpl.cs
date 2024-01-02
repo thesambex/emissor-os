@@ -1,4 +1,5 @@
 ﻿using Emissor.Application.Factory;
+using Emissor.Application.Providers;
 using Emissor.Application.Repository;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs.Auth;
@@ -8,14 +9,10 @@ using Emissor.Domain.Entities;
 using Emissor.Infra.Security.Password;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,14 +23,14 @@ public class AuthServiceImpl : IAuthService
 
     private readonly PasswordHashingManager passwordHashing = new PasswordHashingManager();
     private readonly IUsuariosRepository _usuariosRepository;
-    private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
+    private readonly IJwtProvider _jwtProvider;
 
-    public AuthServiceImpl(IConfiguration configuration, ILogger<AuthServiceImpl> logger, IAbstractRepositoryFactory abstractRepositoryFactory)
+    public AuthServiceImpl(ILogger<AuthServiceImpl> logger, IAbstractRepositoryFactory abstractRepositoryFactory, IJwtProvider jwtProvider)
     {
-        _configuration = configuration;
         _usuariosRepository = abstractRepositoryFactory.CreateUsuariosRepository();
         _logger = logger;
+        _jwtProvider = jwtProvider;
     }
 
     public async Task<IActionResult> SignIn(SignInDTO body)
@@ -51,23 +48,7 @@ public class AuthServiceImpl : IAuthService
                 return new UnauthorizedResult();
             }
 
-            var securityKeys = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!));
-            var credentials = new SigningCredentials(securityKeys, SecurityAlgorithms.HmacSha256);
-
-            var claims = new List<Claim>()
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                _configuration["JwtSettings:Issuer"],
-                _configuration["JwtSettings:Audience"],
-                claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials!
-                );
-
-            return new OkObjectResult(new TokenDTO(new JwtSecurityTokenHandler().WriteToken(token)));
+            return new OkObjectResult(new TokenDTO(_jwtProvider.GenerateJwt(usuario)));
         }
         catch (Exception ex)
         {

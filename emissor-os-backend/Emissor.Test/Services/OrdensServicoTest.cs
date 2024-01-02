@@ -1,6 +1,8 @@
 ﻿using Castle.Core.Logging;
 using Emissor.Application.Database;
+using Emissor.Application.Providers;
 using Emissor.Domain.DTOs.OrdemServico;
+using Emissor.Infra.Auth;
 using Emissor.Infra.Factory;
 using Emissor.Infra.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -47,9 +49,8 @@ public class OrdensServicoTest : IDisposable
     [Fact]
     public async void Deve_Abrir_OS()
     {
-        var claims = new List<Claim>() { new Claim("sub", "fbec4a0b-c31f-4567-bee4-d3a830f14c52") };
-        var os = new AbrirOSDTO(null, null, Guid.Parse("efd78fff-9df1-4f46-b1dd-e917052f4d18"), Guid.Parse("fbec4a0b-c31f-4567-bee4-d3a830f14c52"), "Teste abertura de OS", "Teste", 5.39, DateTimeOffset.UtcNow);
-        var response = await ordemServicoService.AbrirOS(new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(claims: claims), os);
+        var os = new AbrirOSDTO(null, null, Guid.Parse("367b640f-f748-4173-9e05-c999e0f6ef93"), Guid.Parse("ff420a1c-08f8-48e3-a2a4-fce2dc8320a8"), "Teste abertura de OS", "Teste", 5.39, DateTimeOffset.UtcNow);
+        var response = await ordemServicoService.AbrirOS(Guid.Parse("ff420a1c-08f8-48e3-a2a4-fce2dc8320a8"), os);
 
         Assert.NotNull(response);
         Assert.IsType<CreatedAtActionResult>(response);

@@ -1,4 +1,5 @@
-﻿using Emissor.Application.Services;
+﻿using Emissor.Application.Providers;
+using Emissor.Application.Services;
 using Emissor.Domain.DTOs.OrdemServico;
 using Emissor.Infra.Util;
 using Microsoft.AspNetCore.Authorization;
@@ -16,10 +17,12 @@ public class OrdemServicoController : ControllerBase
 {
 
     private readonly IOrdemServicoService _ordemServicoService;
+    private readonly IJwtProvider _jwtProvider;
 
-    public OrdemServicoController(IOrdemServicoService ordemServicoService)
+    public OrdemServicoController(IOrdemServicoService ordemServicoService, IJwtProvider jwtProvider)
     {
         _ordemServicoService = ordemServicoService;
+        _jwtProvider = jwtProvider;
     }
 
     [HttpPost]
@@ -31,10 +34,10 @@ public class OrdemServicoController : ControllerBase
     {
         try
         {
-            var token = new JWTParser(Request.Headers["Authorization"]).GetJWT();
+            var token = _jwtProvider.DecodeJwt(Request.Headers["Authorization"]);
             if(token != null)
             {
-                return await _ordemServicoService.AbrirOS(token, body);
+                return await _ordemServicoService.AbrirOS(token.Sub, body);
             }
             else
             {

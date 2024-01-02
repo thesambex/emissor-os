@@ -1,7 +1,9 @@
 using Emissor.Application.Database;
 using Emissor.Application.Factory;
+using Emissor.Application.Providers;
 using Emissor.Application.Repository;
 using Emissor.Application.Services;
+using Emissor.Infra.Auth;
 using Emissor.Infra.Factory;
 using Emissor.Infra.Repository;
 using Emissor.Infra.Services;
@@ -92,6 +94,7 @@ builder.Services.AddCors(opt =>
 });
 
 builder.Services.AddDbContext<PgContext>(opt => opt.UseNpgsql(config["ConnectionStrings:Postgresql"]));
+builder.Services.AddTransient<IJwtProvider, JwtProviderImpl>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWorkImpl>();
 builder.Services.AddTransient<IAbstractRepositoryFactory, AbstractRepositoryFactoryImpl>();
 builder.Services.AddScoped<IUsuariosService, UsuariosServiceImpl>();

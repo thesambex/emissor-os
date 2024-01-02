@@ -29,11 +29,10 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
         _ordemServicoRepository = abstractRepositoryFactory.CreateOrdemServicoRepository();
     }
 
-    public async Task<IActionResult> AbrirOS(JwtSecurityToken token, AbrirOSDTO body)
+    public async Task<IActionResult> AbrirOS(Guid atendenteId, AbrirOSDTO body)
     {
         try
         {
-            var atendenteId = Guid.Parse(token?.Claims.FirstOrDefault(claim => claim.Type.Equals("sub"))?.Value!);
             var ordemServico = new OrdemServico()
             {
                 AtendenteId = atendenteId,
@@ -77,21 +76,21 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
 
             var servicoCliente = ordemServico.Cliente;
             var response = new OSDTO(
-                ordemServico.Id, 
-                ordemServico.Numero, 
-                ordemServico.AtendenteId, 
-                ordemServico.Descricao, 
-                ordemServico.Observacoes, 
-                ordemServico.ValorHora, 
-                ordemServico.ValorFinal, 
-                ordemServico.DtInicio, 
-                ordemServico.DtFim, 
+                ordemServico.Id,
+                ordemServico.Numero,
+                ordemServico.AtendenteId,
+                ordemServico.Descricao,
+                ordemServico.Observacoes,
+                ordemServico.ValorHora,
+                ordemServico.ValorFinal,
+                ordemServico.DtInicio,
+                ordemServico.DtFim,
                 new ClienteDTO(
-                    servicoCliente!.Id, 
-                    servicoCliente.Nome, 
-                    servicoCliente.Documento, 
-                    servicoCliente.Endereco, 
-                    servicoCliente.EnderecoNumero, 
+                    servicoCliente!.Id,
+                    servicoCliente.Nome,
+                    servicoCliente.Documento,
+                    servicoCliente.Endereco,
+                    servicoCliente.EnderecoNumero,
                     servicoCliente.Bairro,
                     servicoCliente.Municipio,
                     servicoCliente.IsPJ
@@ -103,6 +102,20 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
         catch (Exception ex)
         {
             _logger.LogError($"Falha ao obter a OS {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> FinalizarServico(Guid id)
+    {
+        try
+        {
+
+            return new OkObjectResult(null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao finalizar o serviço {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
