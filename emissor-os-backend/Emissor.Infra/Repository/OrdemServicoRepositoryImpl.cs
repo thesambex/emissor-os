@@ -1,6 +1,7 @@
 ﻿using Emissor.Application.Database;
 using Emissor.Application.Repository;
 using Emissor.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,7 @@ public class OrdemServicoRepositoryImpl : IOrdemServicoRepository
         await _pgContext.SaveChangesAsync();
         return ordemServico;
     }
+
+    public async Task<OrdemServico?> GetOSById(Guid id) => await _pgContext.OrdemServicos.Include(e => e.Cliente).FirstOrDefaultAsync(e => e.Id == id);
 
 }

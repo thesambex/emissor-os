@@ -10,4 +10,5 @@ namespace Emissor.Application.Repository;
 public interface IOrdemServicoRepository
 {
     Task<OrdemServico> CriarOS(OrdemServico ordemServico);
+    Task<OrdemServico?> GetOSById(Guid id);
 }

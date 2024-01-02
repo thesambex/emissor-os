@@ -12,4 +12,5 @@ namespace Emissor.Application.Services;
 public interface IOrdemServicoService
 {
     Task<IActionResult> AbrirOS(JwtSecurityToken token, AbrirOSDTO body);
+    Task<IActionResult> GetOS(Guid id);
 }

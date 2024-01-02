@@ -56,7 +56,7 @@ public class AuthServiceImpl : IAuthService
 
             var claims = new List<Claim>()
             {
-                new Claim("sub", usuario.Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString())
             };
 
             var token = new JwtSecurityToken(

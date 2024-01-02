@@ -1,6 +1,7 @@
 ﻿using Emissor.Application.Factory;
 using Emissor.Application.Repository;
 using Emissor.Application.Services;
+using Emissor.Domain.DTOs.Clientes;
 using Emissor.Domain.DTOs.OrdemServico;
 using Emissor.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -60,6 +61,48 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
         catch (Exception ex)
         {
             _logger.LogError($"Falha ao abrir a OS {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> GetOS(Guid id)
+    {
+        try
+        {
+            var ordemServico = await _ordemServicoRepository.GetOSById(id);
+            if (ordemServico == null)
+            {
+                return new NotFoundResult();
+            }
+
+            var servicoCliente = ordemServico.Cliente;
+            var response = new OSDTO(
+                ordemServico.Id, 
+                ordemServico.Numero, 
+                ordemServico.AtendenteId, 
+                ordemServico.Descricao, 
+                ordemServico.Observacoes, 
+                ordemServico.ValorHora, 
+                ordemServico.ValorFinal, 
+                ordemServico.DtInicio, 
+                ordemServico.DtFim, 
+                new ClienteDTO(
+                    servicoCliente!.Id, 
+                    servicoCliente.Nome, 
+                    servicoCliente.Documento, 
+                    servicoCliente.Endereco, 
+                    servicoCliente.EnderecoNumero, 
+                    servicoCliente.Bairro,
+                    servicoCliente.Municipio,
+                    servicoCliente.IsPJ
+                    )
+                );
+
+            return new OkObjectResult(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao obter a OS {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

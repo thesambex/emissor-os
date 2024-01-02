@@ -55,4 +55,16 @@ public class OrdensServicoTest : IDisposable
         Assert.IsType<CreatedAtActionResult>(response);
     }
 
+    [Fact]
+    public async void Deve_Obter_Uma_Ordem_De_Servico()
+    {
+        var response = await ordemServicoService.GetOS(Guid.Parse("6fd88023-ff2a-4311-a12c-91a8dbeff77b"));
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+
+        var payload = ((OkObjectResult)response).Value as OSDTO;
+        Assert.NotNull(payload);
+    }
+
 }
