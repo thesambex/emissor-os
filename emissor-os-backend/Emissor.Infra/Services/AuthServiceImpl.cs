@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,10 +54,15 @@ public class AuthServiceImpl : IAuthService
             var securityKeys = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!));
             var credentials = new SigningCredentials(securityKeys, SecurityAlgorithms.HmacSha256);
 
+            var claims = new List<Claim>()
+            {
+                new Claim("sub", usuario.Id.ToString())
+            };
+
             var token = new JwtSecurityToken(
                 _configuration["JwtSettings:Issuer"],
                 _configuration["JwtSettings:Audience"],
-                null,
+                claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: credentials!
                 );
@@ -91,7 +97,7 @@ public class AuthServiceImpl : IAuthService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao criar o usuário: {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 

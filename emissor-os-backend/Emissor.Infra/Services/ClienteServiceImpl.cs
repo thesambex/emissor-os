@@ -96,7 +96,7 @@ public class ClienteServiceImpl : IClientesService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao obter o cliente ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao obter o cliente {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
@@ -110,7 +110,7 @@ public class ClienteServiceImpl : IClientesService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao deletar o cliente ${id} - ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao deletar o cliente {id} - {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
@@ -123,7 +123,7 @@ public class ClienteServiceImpl : IClientesService
         }
         catch(Exception ex)
         {
-            _logger.LogError($"Falha ao buscar o cliente ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao buscar o cliente {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

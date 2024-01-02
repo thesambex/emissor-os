@@ -53,7 +53,7 @@ public class UsuariosServiceImpl : IUsuariosService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao criar o usuário: {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
@@ -87,7 +87,7 @@ public class UsuariosServiceImpl : IUsuariosService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao atualizar o usuário: ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao atualizar o usuário: {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 
@@ -103,7 +103,7 @@ public class UsuariosServiceImpl : IUsuariosService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao deletar o usuário ${id} - {ex.InnerException}", ex);
+            _logger.LogError($"Falha ao deletar o usuário {id} - {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
