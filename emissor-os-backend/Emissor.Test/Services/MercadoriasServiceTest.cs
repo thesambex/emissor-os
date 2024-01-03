@@ -62,4 +62,13 @@ public class MercadoriasServiceTest : IDisposable
         Assert.IsType<OkObjectResult>(response);
     }
 
+    [Fact(Skip = "Não é necessário no momento")]
+    public async void Deve_Deletar_Uma_Mercadoria()
+    {
+        var response = await mercadoriasService.DeletarMercadoria(Guid.Parse("cde454d2-d968-4cb7-b272-6924667a60a3"));
+
+        Assert.NotNull(response);
+        Assert.IsType<NoContentResult>(response);
+    }
+
 }

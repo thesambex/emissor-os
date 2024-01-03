@@ -33,4 +33,13 @@ internal class MercadoriaRepositoryImpl : IMercadoriaRepository
     
     public async Task<bool> IssetMercadoriaByCodigoBarra(string codigoBarra) => await _pgContext.Mercadorias.CountAsync(e => e.CodigoBarra!.Equals(codigoBarra)) > 0;
 
+    public async Task<bool> DeletarMercadoria(Guid id)
+    {
+        var mercadoria = await _pgContext.Mercadorias.FindAsync(id);
+        if (mercadoria == null) { return false; }
+
+        _pgContext.Mercadorias.Remove(mercadoria);
+        await _pgContext.SaveChangesAsync();
+        return true;
+    }
 }

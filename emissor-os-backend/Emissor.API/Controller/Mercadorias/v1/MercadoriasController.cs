@@ -33,4 +33,11 @@ public class MercadoriasController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetMercadoria(Guid id) => await _mercadoriasService.GetMercadoria(id);
 
+    [HttpDelete]
+    [Route("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeletarMercadoria(Guid id) => await _mercadoriasService.DeletarMercadoria(id);
+
 }

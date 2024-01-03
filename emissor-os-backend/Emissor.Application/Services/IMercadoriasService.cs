@@ -12,4 +12,5 @@ public interface IMercadoriasService
 {
     Task<IActionResult> CriarMercadoria(MercadoriaDTO body);
     Task<IActionResult> GetMercadoria(Guid id);
+    Task<IActionResult> DeletarMercadoria(Guid id);
 }

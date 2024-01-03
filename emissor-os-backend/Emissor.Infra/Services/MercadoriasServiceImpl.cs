@@ -97,4 +97,22 @@ public class MercadoriasServiceImpl : IMercadoriasService
         }
     }
 
+    public async Task<IActionResult> DeletarMercadoria(Guid id)
+    {
+        try
+        {
+            if(!await _mercadoriaRepository.DeletarMercadoria(id))
+            {
+                return new NotFoundResult();
+            }
+
+            return new NoContentResult();
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError($"Falha ao deletar a mercadoria {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
 }
