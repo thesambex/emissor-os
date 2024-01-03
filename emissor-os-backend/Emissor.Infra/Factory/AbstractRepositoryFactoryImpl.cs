@@ -26,4 +26,6 @@ public class AbstractRepositoryFactoryImpl : IAbstractRepositoryFactory
 
     public IOrdemServicoRepository CreateOrdemServicoRepository() => new OrdemServicoRepositoryImpl(_pgContext);
 
+    public IMercadoriaRepository CreateMercadoriaRepository() => new MercadoriaRepositoryImpl(_pgContext);
+
 }

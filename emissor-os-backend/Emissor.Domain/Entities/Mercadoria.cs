@@ -13,7 +13,7 @@ public class Mercadoria
     public Guid Id { get; set; }
     public string Descricao { get; set; }
     public string Referencia { get; set; }
-    public string CodigoBarra { get; set; }
+    public string? CodigoBarra { get; set; }
     public double Preco { get; set; }
     public TipoUnidades Unidade { get; set; }
 

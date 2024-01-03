@@ -77,7 +77,7 @@ public class ClienteServiceImpl : IClientesService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao cadastrar o cliente ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao cadastrar o cliente {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

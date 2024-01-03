@@ -1,8 +1,6 @@
-﻿using Castle.Core.Logging;
-using Emissor.Application.Database;
-using Emissor.Application.Providers;
+﻿using Emissor.Application.Database;
+using Emissor.Application.Services;
 using Emissor.Domain.DTOs.OrdemServico;
-using Emissor.Infra.Auth;
 using Emissor.Infra.Factory;
 using Emissor.Infra.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +11,18 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Emissor.Test.Services;
 
-public class OrdensServicoTest : IDisposable
+public class OrdensServicoServiceTest : IDisposable
 {
 
     private readonly PgContext pgContext;
-    private readonly OrdemServicoServiceImpl ordemServicoService;
+    private readonly IOrdemServicoService ordemServicoService;
 
-    public OrdensServicoTest()
+    public OrdensServicoServiceTest()
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())

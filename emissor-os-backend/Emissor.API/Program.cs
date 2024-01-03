@@ -101,6 +101,7 @@ builder.Services.AddScoped<IUsuariosService, UsuariosServiceImpl>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 builder.Services.AddScoped<IClientesService, ClienteServiceImpl>();
 builder.Services.AddScoped<IOrdemServicoService, OrdemServicoServiceImpl>();
+builder.Services.AddScoped<IMercadoriasService, MercadoriasServiceImpl>();
 
 var app = builder.Build();
 
