@@ -53,4 +53,13 @@ public class MercadoriasServiceTest : IDisposable
         Assert.IsType<CreatedAtActionResult>(response);
     }
 
+    [Fact]
+    public async void Deve_Obter_Uma_Nova_Mercadoria()
+    {
+        var response = await mercadoriasService.GetMercadoria(Guid.Parse("3233b112-7a22-48a9-aff0-600b873c5c31"));
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+    }
+
 }

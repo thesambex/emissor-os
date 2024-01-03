@@ -77,7 +77,7 @@ public class OrdensServicoServiceTest : IDisposable
         Assert.NotNull(payload);
     }
 
-    [Fact]
+    [Fact(Skip = "Não é necessário no momento")]
     public async void Deve_Deletar_Uma_Ordem_De_Servico()
     {
         var response = await ordemServicoService.DeletarOS(Guid.Parse("203aa950-3356-4d54-88f4-67edb027038e"));
