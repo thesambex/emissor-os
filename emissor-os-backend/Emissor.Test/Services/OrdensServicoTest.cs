@@ -80,4 +80,13 @@ public class OrdensServicoTest : IDisposable
         Assert.NotNull(payload);
     }
 
+    [Fact]
+    public async void Deve_Deletar_Uma_Ordem_De_Servico()
+    {
+        var response = await ordemServicoService.DeletarOS(Guid.Parse("203aa950-3356-4d54-88f4-67edb027038e"));
+
+        Assert.NotNull(response);
+        Assert.IsType<NoContentResult>(response);
+    }
+        
 }

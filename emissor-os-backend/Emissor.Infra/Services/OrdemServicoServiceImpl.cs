@@ -161,7 +161,12 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
     {
         try
         {
+            if(!await _ordemServicoRepository.DeletarOS(id))
+            {
+                return new NotFoundResult();
+            }
 
+            return new NoContentResult();
         }
         catch(Exception ex)
         {

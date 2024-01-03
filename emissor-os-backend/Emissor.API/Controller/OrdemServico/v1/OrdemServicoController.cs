@@ -63,4 +63,11 @@ public class OrdemServicoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> FinalizarServico(Guid id) => await _ordemServicoService.FinalizarServico(id);
 
+    [HttpDelete]
+    [Route("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(OSDTO))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeletarServico(Guid id) => await _ordemServicoService.DeletarOS(id);
+
 }
