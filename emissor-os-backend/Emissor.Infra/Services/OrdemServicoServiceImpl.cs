@@ -110,8 +110,45 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
     {
         try
         {
+            var ordemServico = await _ordemServicoRepository.GetOSById(id);
+            if (ordemServico == null)
+            {
+                return new NotFoundResult();
+            }
 
-            return new OkObjectResult(null);
+            ordemServico.DtFim = DateTime.Now.ToUniversalTime();
+            ordemServico.ValorFinal = ordemServico.ValorTotal();
+
+            ordemServico = await _ordemServicoRepository.Finalizar(id, ordemServico);
+            if (ordemServico == null)
+            {
+                return new NotFoundResult();
+            }
+
+            var servicoCliente = ordemServico.Cliente;
+            var response = new OSDTO(
+                ordemServico.Id,
+                ordemServico.Numero,
+                ordemServico.AtendenteId,
+                ordemServico.Descricao,
+                ordemServico.Observacoes,
+                ordemServico.ValorHora,
+                ordemServico.ValorFinal,
+                ordemServico.DtInicio,
+                ordemServico.DtFim!.Value.ToLocalTime(),
+                new ClienteDTO(
+                    servicoCliente!.Id,
+                    servicoCliente.Nome,
+                    servicoCliente.Documento,
+                    servicoCliente.Endereco,
+                    servicoCliente.EnderecoNumero,
+                    servicoCliente.Bairro,
+                    servicoCliente.Municipio,
+                    servicoCliente.IsPJ
+                    )
+                );
+
+            return new OkObjectResult(response);
         }
         catch (Exception ex)
         {

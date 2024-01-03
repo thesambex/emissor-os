@@ -1,7 +1,6 @@
 ﻿using Emissor.Application.Providers;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs.OrdemServico;
-using Emissor.Infra.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -56,5 +55,12 @@ public class OrdemServicoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetOrdemServico(Guid id) => await _ordemServicoService.GetOS(id);
+
+    [HttpPatch]
+    [Route("finalizar/{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OSDTO))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> FinalizarServico(Guid id) => await _ordemServicoService.FinalizarServico(id);
 
 }

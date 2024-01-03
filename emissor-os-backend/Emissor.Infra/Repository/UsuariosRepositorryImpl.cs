@@ -36,6 +36,8 @@ internal class UsuariosRepositorryImpl : IUsuariosRepository
     public async Task AtualizarUsuario(Guid id, Usuario usuario)
     {
         var usu = await _pgContext.Usuarios.FindAsync(id);
+        if (usu == null) { return; }
+
         usu.Nome = usuario.Nome;
         usu.Senha = usuario.Senha;
         

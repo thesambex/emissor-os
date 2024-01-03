@@ -24,4 +24,11 @@ public class OrdemServico
     public Usuario? Usuario { get; set; }
     public ICollection<OrdemServicoMercadoria>? OrdemServicoMercadorias { get; set; }
 
+    public double ValorTotal()
+    {
+        if(DtFim == null) { return 0; }
+        var timeDiff = DtFim - DtInicio;
+        return timeDiff.Value.TotalHours * ValorHora;
+    }
+
 }

@@ -22,11 +22,23 @@ public class OrdemServicoRepositoryImpl : IOrdemServicoRepository
 
     public async Task<OrdemServico> CriarOS(OrdemServico ordemServico)
     {
-        await _pgContext.OrdemServicos.AddAsync(ordemServico);
+        await _pgContext.OrdensServico.AddAsync(ordemServico);
         await _pgContext.SaveChangesAsync();
         return ordemServico;
     }
 
-    public async Task<OrdemServico?> GetOSById(Guid id) => await _pgContext.OrdemServicos.Include(e => e.Cliente).FirstOrDefaultAsync(e => e.Id == id);
+    public async Task<OrdemServico?> GetOSById(Guid id) => await _pgContext.OrdensServico.Include(e => e.Cliente).FirstOrDefaultAsync(e => e.Id == id);
+
+    public async Task<OrdemServico?> Finalizar(Guid id, OrdemServico input)
+    {
+        var ordemServico = await _pgContext.OrdensServico.Include(e => e.Cliente).FirstOrDefaultAsync(e => e.Id == id);
+        if (ordemServico == null) { return null; }
+
+        ordemServico.DtFim = input.DtFim;
+        ordemServico.ValorFinal = input.ValorFinal;
+
+        await _pgContext.SaveChangesAsync();
+        return ordemServico;
+    }
 
 }

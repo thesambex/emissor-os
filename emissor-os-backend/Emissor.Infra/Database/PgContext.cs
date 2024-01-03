@@ -16,7 +16,7 @@ public class PgContext : DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Mercadoria> Produtos { get; set; }
-    public DbSet<OrdemServico> OrdemServicos { get; set; }
+    public DbSet<OrdemServico> OrdensServico { get; set; }
     public DbSet<OrdemServicoMercadoria> OrdemServicoMercadorias { get; set; }
 
     public PgContext(DbContextOptions<PgContext> options) 

@@ -68,4 +68,16 @@ public class OrdensServicoTest : IDisposable
         Assert.NotNull(payload);
     }
 
+    [Fact]
+    public async void Deve_Finalizar_Uma_Ordem_De_Servico()
+    {
+        var response = await ordemServicoService.FinalizarServico(Guid.Parse("203aa950-3356-4d54-88f4-67edb027038e"));
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+
+        var payload = ((OkObjectResult)response).Value as OSDTO;
+        Assert.NotNull(payload);
+    }
+
 }
