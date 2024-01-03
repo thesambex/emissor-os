@@ -98,7 +98,11 @@ public class UsuariosServiceImpl : IUsuariosService
     {
         try
         {
-            await _usuariosRepository.DeletarUsuario(id);
+            if(!await _usuariosRepository.DeletarUsuario(id))
+            {
+                return new NotFoundResult();
+            }
+            
             return new NoContentResult();
         }
         catch (Exception ex)

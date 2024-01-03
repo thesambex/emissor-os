@@ -105,7 +105,11 @@ public class ClienteServiceImpl : IClientesService
     {
         try
         {
-            await _clientesRepository.DeletarCliente(id);
+            if(!await _clientesRepository.DeletarCliente(id))
+            {
+                return new NotFoundResult();
+            }
+            
             return new NoContentResult();
         }
         catch (Exception ex)

@@ -157,4 +157,17 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
         }
     }
 
+    public async Task<IActionResult> DeletarOS(Guid id)
+    {
+        try
+        {
+
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError($"Falha ao deletar a ordem de serviço {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
 }

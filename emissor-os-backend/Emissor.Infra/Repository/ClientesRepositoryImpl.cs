@@ -36,15 +36,15 @@ internal class ClientesRepositoryImpl : IClientesRepository
         => await _pgContext.Clientes.Where(e => e.Nome.StartsWith(query) || e.Documento.StartsWith(query))
         .Select(e => new ClienteBuscaDTO(e.Id, e.Nome, e.Documento))
         .ToListAsync();
-    
-    public async Task DeletarCliente(Guid id)
+
+    public async Task<bool> DeletarCliente(Guid id)
     {
         var cliente = await _pgContext.Clientes.FindAsync(id);
-        if(cliente != null)
-        {
-            _pgContext.Clientes.Remove(cliente);
-            await _pgContext.SaveChangesAsync();
-        }
+        if (cliente == null) { return false; }
+
+        _pgContext.Clientes.Remove(cliente);
+        await _pgContext.SaveChangesAsync();
+        return true;
     }
 
 }

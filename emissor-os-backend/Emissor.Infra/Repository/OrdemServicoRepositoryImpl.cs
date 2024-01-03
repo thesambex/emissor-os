@@ -41,4 +41,14 @@ public class OrdemServicoRepositoryImpl : IOrdemServicoRepository
         return ordemServico;
     }
 
+    public async Task<bool> DeletarOS(Guid id)
+    {
+        var ordemServico = await _pgContext.OrdensServico.FindAsync(id);
+        if(ordemServico == null) { return false; }
+
+        _pgContext.OrdensServico.Remove(ordemServico);
+        await _pgContext.SaveChangesAsync();
+        return true;
+    }
+
 }

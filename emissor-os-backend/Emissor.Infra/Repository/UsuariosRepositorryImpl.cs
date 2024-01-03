@@ -40,23 +40,23 @@ internal class UsuariosRepositorryImpl : IUsuariosRepository
 
         usu.Nome = usuario.Nome;
         usu.Senha = usuario.Senha;
-        
-        if(!usu.NomeUsuario.Equals(usuario.NomeUsuario))
+
+        if (!usu.NomeUsuario.Equals(usuario.NomeUsuario))
         {
             usu.NomeUsuario = usuario.NomeUsuario;
         }
-        
+
         await _pgContext.SaveChangesAsync();
     }
 
-    public async Task DeletarUsuario(Guid id)
+    public async Task<bool> DeletarUsuario(Guid id)
     {
         var usuario = await _pgContext.Usuarios.FindAsync(id);
-        if(usuario != null)
-        {
-            _pgContext.Usuarios.Remove(usuario);
-            await _pgContext.SaveChangesAsync();
-        }
+        if (usuario == null) { return false; }
+
+        _pgContext.Usuarios.Remove(usuario);
+        await _pgContext.SaveChangesAsync();
+        return true;
     }
 
 }
