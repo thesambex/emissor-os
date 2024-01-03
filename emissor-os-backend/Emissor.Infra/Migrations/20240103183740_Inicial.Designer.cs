@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Emissor.Infra.Migrations
 {
     [DbContext(typeof(PgContext))]
-    [Migration("20240102173758_Inicial")]
+    [Migration("20240103183740_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -94,7 +94,6 @@ namespace Emissor.Infra.Migrations
                         .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<string>("CodigoBarra")
-                        .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)")
                         .HasColumnName("codigo_barra");
@@ -116,7 +115,7 @@ namespace Emissor.Infra.Migrations
                         .HasColumnName("referencia");
 
                     b.Property<int>("Unidade")
-                        .HasColumnType("tipo_unidades")
+                        .HasColumnType("integer")
                         .HasColumnName("unidade");
 
                     b.HasKey("Id");

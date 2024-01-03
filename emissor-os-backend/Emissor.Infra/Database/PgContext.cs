@@ -2,6 +2,7 @@
 using Emissor.Domain.Enums;
 using Emissor.Infra.Database.Mapping;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ public class PgContext : DbContext
 
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
-    public DbSet<Mercadoria> Produtos { get; set; }
+    public DbSet<Mercadoria> Mercadorias { get; set; }
     public DbSet<OrdemServico> OrdensServico { get; set; }
     public DbSet<OrdemServicoMercadoria> OrdemServicoMercadorias { get; set; }
 
@@ -29,7 +30,7 @@ public class PgContext : DbContext
     {
         builder.HasPostgresExtension("uuid-ossp");
         builder.HasSequence<long>("numero_os_seq");
-        builder.HasPostgresEnum<TipoUnidades>(name: "tipo_unidades");
+        builder.HasPostgresEnum<TipoUnidades>();
         
         builder.ApplyConfiguration(new UsuarioMapping());
         builder.ApplyConfiguration(new ClienteMapping());

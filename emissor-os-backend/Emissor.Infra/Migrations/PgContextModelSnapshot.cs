@@ -91,7 +91,6 @@ namespace Emissor.Infra.Migrations
                         .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<string>("CodigoBarra")
-                        .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)")
                         .HasColumnName("codigo_barra");
@@ -113,7 +112,7 @@ namespace Emissor.Infra.Migrations
                         .HasColumnName("referencia");
 
                     b.Property<int>("Unidade")
-                        .HasColumnType("tipo_unidades")
+                        .HasColumnType("integer")
                         .HasColumnName("unidade");
 
                     b.HasKey("Id");

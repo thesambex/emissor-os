@@ -21,7 +21,7 @@ internal class MercadoriaMapping : IEntityTypeConfiguration<Mercadoria>
         builder.Property(e => e.CodigoBarra).HasColumnName("codigo_barra").HasMaxLength(13);
         builder.Property(e => e.Preco).HasColumnName("preco").HasColumnType("DECIMAL(8,2)").IsRequired();
         builder.HasIndex(e => e.Referencia).IsUnique();
-        builder.Property(e => e.Unidade).HasColumnName("unidade").HasColumnType("tipo_unidades");
+        builder.Property(e => e.Unidade).HasColumnName("unidade").IsRequired();
     }
 
 }

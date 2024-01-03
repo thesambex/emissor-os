@@ -57,9 +57,9 @@ namespace Emissor.Infra.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     descricao = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     referencia = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    codigo_barra = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: false),
+                    codigo_barra = table.Column<string>(type: "character varying(13)", maxLength: 13, nullable: true),
                     preco = table.Column<double>(type: "numeric(8,2)", nullable: false),
-                    unidade = table.Column<int>(type: "tipo_unidades", nullable: false)
+                    unidade = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
