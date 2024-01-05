@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Emissor.Infra.Migrations
 {
     [DbContext(typeof(PgContext))]
-    [Migration("20240103183740_Inicial")]
+    [Migration("20240105140319_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -190,13 +190,13 @@ namespace Emissor.Infra.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
+                    b.Property<Guid>("MercadoriaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("mercadoria_id");
+
                     b.Property<Guid>("OrdemServicoId")
                         .HasColumnType("uuid")
                         .HasColumnName("ordem_servico_id");
-
-                    b.Property<Guid>("ProdutoId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("produto_id");
 
                     b.Property<double>("Quantidade")
                         .HasColumnType("DECIMAL(7,2)")
@@ -204,10 +204,9 @@ namespace Emissor.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrdemServicoId");
+                    b.HasIndex("MercadoriaId");
 
-                    b.HasIndex("ProdutoId")
-                        .IsUnique();
+                    b.HasIndex("OrdemServicoId");
 
                     b.ToTable("ordens_servico_mercadoias", "ordens_servico");
                 });
@@ -267,21 +266,21 @@ namespace Emissor.Infra.Migrations
 
             modelBuilder.Entity("Emissor.Domain.Entities.OrdemServicoMercadoria", b =>
                 {
+                    b.HasOne("Emissor.Domain.Entities.Mercadoria", "Mercadoria")
+                        .WithMany("OrdemServicoMercadorias")
+                        .HasForeignKey("MercadoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Emissor.Domain.Entities.OrdemServico", "OrdemServico")
                         .WithMany("OrdemServicoMercadorias")
                         .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Emissor.Domain.Entities.Mercadoria", "Produto")
-                        .WithOne("OrdemServicoMercadoria")
-                        .HasForeignKey("Emissor.Domain.Entities.OrdemServicoMercadoria", "ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Mercadoria");
 
                     b.Navigation("OrdemServico");
-
-                    b.Navigation("Produto");
                 });
 
             modelBuilder.Entity("Emissor.Domain.Entities.Cliente", b =>
@@ -291,7 +290,7 @@ namespace Emissor.Infra.Migrations
 
             modelBuilder.Entity("Emissor.Domain.Entities.Mercadoria", b =>
                 {
-                    b.Navigation("OrdemServicoMercadoria");
+                    b.Navigation("OrdemServicoMercadorias");
                 });
 
             modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>

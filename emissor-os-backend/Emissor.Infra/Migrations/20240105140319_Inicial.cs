@@ -122,7 +122,7 @@ namespace Emissor.Infra.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    produto_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    mercadoria_id = table.Column<Guid>(type: "uuid", nullable: false),
                     ordem_servico_id = table.Column<Guid>(type: "uuid", nullable: false),
                     quantidade = table.Column<double>(type: "numeric(7,2)", nullable: false)
                 },
@@ -130,8 +130,8 @@ namespace Emissor.Infra.Migrations
                 {
                     table.PrimaryKey("PK_ordens_servico_mercadoias", x => x.id);
                     table.ForeignKey(
-                        name: "FK_ordens_servico_mercadoias_mercadorias_produto_id",
-                        column: x => x.produto_id,
+                        name: "FK_ordens_servico_mercadoias_mercadorias_mercadoria_id",
+                        column: x => x.mercadoria_id,
                         principalSchema: "estoque",
                         principalTable: "mercadorias",
                         principalColumn: "id",
@@ -172,17 +172,16 @@ namespace Emissor.Infra.Migrations
                 column: "cliente_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ordens_servico_mercadoias_mercadoria_id",
+                schema: "ordens_servico",
+                table: "ordens_servico_mercadoias",
+                column: "mercadoria_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ordens_servico_mercadoias_ordem_servico_id",
                 schema: "ordens_servico",
                 table: "ordens_servico_mercadoias",
                 column: "ordem_servico_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ordens_servico_mercadoias_produto_id",
-                schema: "ordens_servico",
-                table: "ordens_servico_mercadoias",
-                column: "produto_id",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_usuarios_nome_usuario",
