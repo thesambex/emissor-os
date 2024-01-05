@@ -21,12 +21,16 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
 {
 
     private readonly IOrdemServicoRepository _ordemServicoRepository;
+    private readonly IOrdemServicoMercadoriasRepository _ordemServicoMercadorsRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
 
-    public OrdemServicoServiceImpl(ILogger<OrdemServicoServiceImpl> logger, IAbstractRepositoryFactory abstractRepositoryFactory)
+    public OrdemServicoServiceImpl(ILogger<OrdemServicoServiceImpl> logger, IAbstractRepositoryFactory abstractRepositoryFactory, IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _ordemServicoRepository = abstractRepositoryFactory.CreateOrdemServicoRepository();
+        _ordemServicoMercadorsRepository = abstractRepositoryFactory.CreateOrdemServicoMercadoriaRepository();
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<IActionResult> AbrirOS(Guid atendenteId, AbrirOSDTO body)
@@ -161,16 +165,56 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
     {
         try
         {
-            if(!await _ordemServicoRepository.DeletarOS(id))
+            if (!await _ordemServicoRepository.DeletarOS(id))
             {
                 return new NotFoundResult();
             }
 
             return new NoContentResult();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError($"Falha ao deletar a ordem de serviço {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> AdicionarMercadorias(Guid ordemServicoId, List<MercadoriaOSDTO> mercadorias)
+    {
+        try
+        {
+            if(!await _ordemServicoRepository.ExisteOS(ordemServicoId))
+            {
+                return new NotFoundResult();
+            }
+
+            if (mercadorias.Count > 0)
+            {
+                await _unitOfWork.Begin();
+
+                var tasks = mercadorias.Select(async dto =>
+                {
+                    var mercadoria = new OrdemServicoMercadoria
+                    {
+                        OrdemServicoId = ordemServicoId,
+                        MercadoriaId = dto.MercadoriaId,
+                        Quantidade = dto.Quantidade,
+                    };
+
+                    await _ordemServicoMercadorsRepository.CriarOrdemServicoMercadoria(mercadoria);
+                });
+
+                await Task.WhenAll(tasks);
+
+                await _unitOfWork.Commit();
+            }
+
+            return new NoContentResult();
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.Rollback();
+            _logger.LogError($"Falha ao adicionar mercadorias a ordem de serviço {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

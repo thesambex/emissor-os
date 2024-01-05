@@ -51,4 +51,6 @@ public class OrdemServicoRepositoryImpl : IOrdemServicoRepository
         return true;
     }
 
+    public async Task<bool> ExisteOS(Guid id) => await _pgContext.OrdensServico.CountAsync(e => e.Id == id) > 0;
+
 }

@@ -65,9 +65,16 @@ public class OrdemServicoController : ControllerBase
 
     [HttpDelete]
     [Route("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(OSDTO))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeletarServico(Guid id) => await _ordemServicoService.DeletarOS(id);
+
+    [HttpPatch]
+    [Route("{id:guid}/mercadorias")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType (StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AdicionarMercadorias(Guid id, List<MercadoriaOSDTO> mercadorias) => await _ordemServicoService.AdicionarMercadorias(id, mercadorias);
 
 }

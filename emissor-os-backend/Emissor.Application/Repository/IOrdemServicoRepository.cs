@@ -13,4 +13,5 @@ public interface IOrdemServicoRepository
     Task<OrdemServico?> GetOSById(Guid id);
     Task<OrdemServico?> Finalizar(Guid id, OrdemServico input);
     Task<bool> DeletarOS(Guid id);
+    Task<bool> ExisteOS(Guid id);
 }

@@ -15,4 +15,5 @@ public interface IOrdemServicoService
     Task<IActionResult> GetOS(Guid id);
     Task<IActionResult> FinalizarServico(Guid id);
     Task<IActionResult> DeletarOS(Guid id);
+    Task<IActionResult> AdicionarMercadorias(Guid ordemServicoId, List<MercadoriaOSDTO> mercadorias);
 }

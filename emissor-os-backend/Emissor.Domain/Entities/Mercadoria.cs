@@ -17,5 +17,5 @@ public class Mercadoria
     public double Preco { get; set; }
     public TipoUnidades Unidade { get; set; }
 
-    public OrdemServicoMercadoria? OrdemServicoMercadoria { get; set; }
+    public ICollection<OrdemServicoMercadoria>? OrdemServicoMercadorias { get; set; }
 }

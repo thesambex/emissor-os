@@ -2,6 +2,7 @@
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs.OrdemServico;
 using Emissor.Infra.Factory;
+using Emissor.Infra.Repository;
 using Emissor.Infra.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,7 @@ public class OrdensServicoServiceTest : IDisposable
         pgContext = new PgContext(dbOptions.Options);
 
         var logger = new Mock<ILogger<OrdemServicoServiceImpl>>();
-        ordemServicoService = new OrdemServicoServiceImpl(logger.Object, new AbstractRepositoryFactoryImpl(pgContext));
+        ordemServicoService = new OrdemServicoServiceImpl(logger.Object, new AbstractRepositoryFactoryImpl(pgContext), new UnitOfWorkImpl(pgContext));
     }
 
     public void Dispose()
@@ -81,6 +82,20 @@ public class OrdensServicoServiceTest : IDisposable
     public async void Deve_Deletar_Uma_Ordem_De_Servico()
     {
         var response = await ordemServicoService.DeletarOS(Guid.Parse("203aa950-3356-4d54-88f4-67edb027038e"));
+
+        Assert.NotNull(response);
+        Assert.IsType<NoContentResult>(response);
+    }
+
+    [Fact]
+    public async void Deve_Adicionar_Mercadorias_A_Uma_Ordem_De_Servico()
+    {
+        var mercadorias = new List<MercadoriaOSDTO>()
+        {
+            new MercadoriaOSDTO(null, null, Guid.Parse("da69e8fd-24aa-44e8-a38a-d17731245af6"), null, 3.0)
+        };
+
+        var response = await ordemServicoService.AdicionarMercadorias(Guid.Parse("6dd45f32-baff-46e0-bfdf-8083b9d30b77"), mercadorias);
 
         Assert.NotNull(response);
         Assert.IsType<NoContentResult>(response);

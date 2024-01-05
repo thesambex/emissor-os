@@ -13,4 +13,5 @@ public interface IAbstractRepositoryFactory
     IClientesRepository CreateClientesRepository();
     IOrdemServicoRepository CreateOrdemServicoRepository();
     IMercadoriaRepository CreateMercadoriaRepository();
+    IOrdemServicoMercadoriasRepository CreateOrdemServicoMercadoriaRepository();
 }

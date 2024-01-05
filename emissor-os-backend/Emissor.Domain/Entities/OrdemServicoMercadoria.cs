@@ -10,11 +10,11 @@ public class OrdemServicoMercadoria
 {
 
     public Guid Id { get; set; }
-    public Guid ProdutoId { get; set; }
+    public Guid MercadoriaId { get; set; }
     public Guid OrdemServicoId { get; set; }
     public double Quantidade { get; set; }
 
     public OrdemServico? OrdemServico { get; set; }
-    public Mercadoria? Produto { get; set; }
+    public Mercadoria? Mercadoria { get; set; }
 
 }

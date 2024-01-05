@@ -59,20 +59,19 @@ public class AuthServiceImpl : IAuthService
 
     public async Task<IActionResult> SignUp(CriarUsuarioDTO body)
     {
-        if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
-        {
-            return new ObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null))
-            {
-                StatusCode = StatusCodes.Status409Conflict
-            };
-        }
-
-        var usuario = new Usuario();
-        usuario.Nome = body.Nome;
-        usuario.NomeUsuario = body.NomeUsuario;
-
         try
         {
+            if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
+            {
+                return new ObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null))
+                {
+                    StatusCode = StatusCodes.Status409Conflict
+                };
+            }
+
+            var usuario = new Usuario();
+            usuario.Nome = body.Nome;
+            usuario.NomeUsuario = body.NomeUsuario;
             usuario.Senha = passwordHashing.GenerateHash(body.Senha!.Trim());
             usuario = await _usuariosRepository.CriarUsuario(usuario);
         }
