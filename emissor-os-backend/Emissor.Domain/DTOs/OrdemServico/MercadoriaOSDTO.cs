@@ -14,5 +14,6 @@ public record MercadoriaOSDTO(
     [property:JsonPropertyName("mercadoria_id")]
     Guid MercadoriaId,
     string? Descricao,
+    double? Valor,
     double Quantidade
 );

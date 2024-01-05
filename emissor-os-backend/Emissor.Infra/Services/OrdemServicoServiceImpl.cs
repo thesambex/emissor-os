@@ -79,6 +79,10 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
             }
 
             var servicoCliente = ordemServico.Cliente;
+            var mercadorias = ordemServico.OrdemServicoMercadorias?.Select(m => new MercadoriaOSDTO(m.Id, m.OrdemServicoId, m.MercadoriaId, m.Mercadoria?.Descricao, m.Mercadoria?.Preco, m.Quantidade)).ToList();
+            
+            ordemServico.ValorFinal = ordemServico.ValorTotalHoras() + mercadorias?.Sum(e => e.Quantidade * e.Valor) ?? 0;
+
             var response = new OSDTO(
                 ordemServico.Id,
                 ordemServico.Numero,
@@ -87,8 +91,8 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
                 ordemServico.Observacoes,
                 ordemServico.ValorHora,
                 ordemServico.ValorFinal,
-                ordemServico.DtInicio,
-                ordemServico.DtFim,
+                ordemServico.DtInicio.LocalDateTime,
+                ordemServico.DtFim?.LocalDateTime,
                 new ClienteDTO(
                     servicoCliente!.Id,
                     servicoCliente.Nome,
@@ -98,7 +102,8 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
                     servicoCliente.Bairro,
                     servicoCliente.Municipio,
                     servicoCliente.IsPJ
-                    )
+                    ),
+                mercadorias
                 );
 
             return new OkObjectResult(response);
@@ -120,9 +125,6 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
                 return new NotFoundResult();
             }
 
-            ordemServico.DtFim = DateTime.Now.ToUniversalTime();
-            ordemServico.ValorFinal = ordemServico.ValorTotal();
-
             ordemServico = await _ordemServicoRepository.Finalizar(id, ordemServico);
             if (ordemServico == null)
             {
@@ -130,6 +132,12 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
             }
 
             var servicoCliente = ordemServico.Cliente;
+            var mercadorias = ordemServico.OrdemServicoMercadorias?.Select(m => new MercadoriaOSDTO(m.Id, m.OrdemServicoId, m.MercadoriaId, m.Mercadoria?.Descricao, m.Mercadoria?.Preco, m.Quantidade)).ToList();
+
+
+            ordemServico.DtFim = DateTime.Now.ToUniversalTime();
+            ordemServico.ValorFinal = ordemServico.ValorTotalHoras() + mercadorias?.Sum(e => e.Quantidade * e.Valor) ?? 0;
+
             var response = new OSDTO(
                 ordemServico.Id,
                 ordemServico.Numero,
@@ -138,8 +146,8 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
                 ordemServico.Observacoes,
                 ordemServico.ValorHora,
                 ordemServico.ValorFinal,
-                ordemServico.DtInicio,
-                ordemServico.DtFim!.Value.ToLocalTime(),
+                ordemServico.DtInicio.LocalDateTime,
+                ordemServico.DtFim?.LocalDateTime,
                 new ClienteDTO(
                     servicoCliente!.Id,
                     servicoCliente.Nome,
@@ -149,7 +157,8 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
                     servicoCliente.Bairro,
                     servicoCliente.Municipio,
                     servicoCliente.IsPJ
-                    )
+                    ),
+                mercadorias
                 );
 
             return new OkObjectResult(response);
@@ -183,7 +192,7 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
     {
         try
         {
-            if(!await _ordemServicoRepository.ExisteOS(ordemServicoId))
+            if (!await _ordemServicoRepository.ExisteOS(ordemServicoId))
             {
                 return new NotFoundResult();
             }

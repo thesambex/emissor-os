@@ -23,5 +23,6 @@ public record OSDTO(
     DateTimeOffset DtInicio,
     [property:JsonPropertyName("dt_final")]
     DateTimeOffset? DtFinal,
-    ClienteDTO Cliente
+    ClienteDTO Cliente,
+    List<MercadoriaOSDTO>? Mercadorias
 );

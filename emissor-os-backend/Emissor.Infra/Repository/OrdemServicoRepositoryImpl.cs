@@ -27,7 +27,7 @@ public class OrdemServicoRepositoryImpl : IOrdemServicoRepository
         return ordemServico;
     }
 
-    public async Task<OrdemServico?> GetOSById(Guid id) => await _pgContext.OrdensServico.Include(e => e.Cliente).FirstOrDefaultAsync(e => e.Id == id);
+    public async Task<OrdemServico?> GetOSById(Guid id) => await _pgContext.OrdensServico.Include(e => e.Cliente).Include(e => e.OrdemServicoMercadorias).ThenInclude(e => e.Mercadoria).FirstOrDefaultAsync(e => e.Id == id);
 
     public async Task<OrdemServico?> Finalizar(Guid id, OrdemServico input)
     {
