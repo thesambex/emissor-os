@@ -13,6 +13,6 @@ public interface IClientesRepository
     Task<Cliente> CriarCliente(Cliente cliente);
     Task<Cliente?> GetClienteById(Guid id);
     Task<bool> IssetClienteByDocumento(string documento);
-    Task<List<ClienteBuscaDTO>> BuscarCliente(string query);
+    Task<List<Cliente>> BuscarCliente(string query);
     Task<bool> DeletarCliente(Guid id);
 }

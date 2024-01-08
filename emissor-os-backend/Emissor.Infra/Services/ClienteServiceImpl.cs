@@ -123,7 +123,8 @@ public class ClienteServiceImpl : IClientesService
     {
         try
         {
-            return new OkObjectResult(await _clientesRepository.BuscarCliente(query));
+            var data = await _clientesRepository.BuscarCliente(query);
+            return new OkObjectResult(data.Select(e => new ClienteBuscaDTO(e.Id, e.Nome, e.Documento)));
         }
         catch(Exception ex)
         {

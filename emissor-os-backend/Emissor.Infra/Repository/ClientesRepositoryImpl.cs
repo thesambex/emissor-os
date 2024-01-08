@@ -32,9 +32,9 @@ internal class ClientesRepositoryImpl : IClientesRepository
 
     public async Task<bool> IssetClienteByDocumento(string documento) => await _pgContext.Clientes.CountAsync(e => e.Documento.Equals(documento)) > 0;
 
-    public async Task<List<ClienteBuscaDTO>> BuscarCliente(string query)
+    public async Task<List<Cliente>> BuscarCliente(string query)
         => await _pgContext.Clientes.Where(e => e.Nome.StartsWith(query) || e.Documento.StartsWith(query))
-        .Select(e => new ClienteBuscaDTO(e.Id, e.Nome, e.Documento))
+        .Select(e => new Cliente() { Id = e.Id, Nome = e.Nome, Documento = e.Documento })
         .ToListAsync();
 
     public async Task<bool> DeletarCliente(Guid id)
