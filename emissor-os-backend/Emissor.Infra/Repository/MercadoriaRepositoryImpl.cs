@@ -30,7 +30,7 @@ internal class MercadoriaRepositoryImpl : IMercadoriaRepository
     public async Task<Mercadoria?> GetMercadoria(Guid id) => await _pgContext.Mercadorias.FindAsync(id);
 
     public async Task<bool> IssetMercadoriaByReferencia(string referencia) => await _pgContext.Mercadorias.CountAsync(e => e.Referencia.Equals(referencia)) > 0;
-    
+
     public async Task<bool> IssetMercadoriaByCodigoBarra(string codigoBarra) => await _pgContext.Mercadorias.CountAsync(e => e.CodigoBarra!.Equals(codigoBarra)) > 0;
 
     public async Task<bool> DeletarMercadoria(Guid id)
@@ -42,4 +42,9 @@ internal class MercadoriaRepositoryImpl : IMercadoriaRepository
         await _pgContext.SaveChangesAsync();
         return true;
     }
+
+    public async Task<List<Mercadoria>> BuscarMercadoria(string query) => await _pgContext.Mercadorias.Where(e => e.Referencia.StartsWith(query) || e.CodigoBarra!.StartsWith(query) || e.Descricao.StartsWith(query)).Select(e => new Mercadoria() { Id = e.Id, Descricao = e.Descricao, Referencia = e.Referencia, Preco = e.Preco }).ToListAsync();
+
+    public async Task<Mercadoria?> GetMercadoriaCodigoBarra(string codigoBarra) => await _pgContext.Mercadorias.Where(e => e.CodigoBarra!.Equals(codigoBarra)).FirstOrDefaultAsync();
+
 }

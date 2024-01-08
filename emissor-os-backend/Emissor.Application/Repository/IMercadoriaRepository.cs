@@ -14,4 +14,6 @@ public interface IMercadoriaRepository
     Task<bool> IssetMercadoriaByReferencia(string referencia);
     Task<bool> IssetMercadoriaByCodigoBarra(string codigoBarra);
     Task<bool> DeletarMercadoria(Guid id);
+    Task<List<Mercadoria>> BuscarMercadoria(string query);
+    Task<Mercadoria?> GetMercadoriaCodigoBarra(string codigoBarra);
 }

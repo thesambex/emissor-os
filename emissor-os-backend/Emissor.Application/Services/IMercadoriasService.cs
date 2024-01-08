@@ -12,5 +12,7 @@ public interface IMercadoriasService
 {
     Task<IActionResult> CriarMercadoria(MercadoriaDTO body);
     Task<IActionResult> GetMercadoria(Guid id);
+    Task<IActionResult> GetMercadoriaCodigoBarra(string codigoBarra);
     Task<IActionResult> DeletarMercadoria(Guid id);
+    Task<IActionResult> BuscarMercadoria(string query, string tipo = "");
 }

@@ -33,7 +33,7 @@ public class MercadoriasServiceImpl : IMercadoriasService
         try
         {
 
-            if(await _mercadoriaRepository.IssetMercadoriaByReferencia(body.Referencia))
+            if (await _mercadoriaRepository.IssetMercadoriaByReferencia(body.Referencia))
             {
                 return new ObjectResult(new ErrorResponseDTO("Já existe uma mercadoria com esta referência", "referencia", null))
                 {
@@ -41,7 +41,7 @@ public class MercadoriasServiceImpl : IMercadoriasService
                 };
             }
 
-            if(body.CodigoBarra != null && await _mercadoriaRepository.IssetMercadoriaByCodigoBarra(body.CodigoBarra)) 
+            if (body.CodigoBarra != null && await _mercadoriaRepository.IssetMercadoriaByCodigoBarra(body.CodigoBarra))
             {
                 return new ObjectResult(new ErrorResponseDTO("Já existe uma mercadoria com este código de barras", "referencia", null))
                 {
@@ -97,20 +97,63 @@ public class MercadoriasServiceImpl : IMercadoriasService
         }
     }
 
+    public async Task<IActionResult> GetMercadoriaCodigoBarra(string codigoBarra)
+    {
+        try
+        {
+            var mercadoria = await _mercadoriaRepository.GetMercadoriaCodigoBarra(codigoBarra);
+            if (mercadoria == null)
+            {
+                return new NotFoundResult();
+            }
+
+            return new OkObjectResult(new MercadoriaDTO(mercadoria.Id, mercadoria.Descricao, mercadoria.Referencia, mercadoria.CodigoBarra, mercadoria.Preco, mercadoria.Unidade.ToString()));
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError($"Falha ao buscar a mercadoria {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
     public async Task<IActionResult> DeletarMercadoria(Guid id)
     {
         try
         {
-            if(!await _mercadoriaRepository.DeletarMercadoria(id))
+            if (!await _mercadoriaRepository.DeletarMercadoria(id))
             {
                 return new NotFoundResult();
             }
 
             return new NoContentResult();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError($"Falha ao deletar a mercadoria {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> BuscarMercadoria(string query, string tipo = "")
+    {
+        try
+        {
+            var data = new List<Mercadoria>();
+            if (!string.IsNullOrEmpty(tipo) && tipo.Equals("BARRA", StringComparison.OrdinalIgnoreCase))
+            {
+                var mercadoria = await _mercadoriaRepository.GetMercadoriaCodigoBarra(query);
+                if (mercadoria != null) data.Add(mercadoria);
+            }
+            else
+            {
+                data = await _mercadoriaRepository.BuscarMercadoria(query);
+            }
+
+            return new OkObjectResult(data.Select(e => new MercadoriaBuscaDTO(e.Id, e.Descricao, e.Referencia, e.Preco)));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao buscar a mercadoria {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

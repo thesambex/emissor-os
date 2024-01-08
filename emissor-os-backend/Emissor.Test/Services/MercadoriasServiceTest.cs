@@ -71,4 +71,25 @@ public class MercadoriasServiceTest : IDisposable
         Assert.IsType<NoContentResult>(response);
     }
 
+    [Fact]
+    public async void Deve_Buscar_Uma_Mercadoria()
+    {
+        var response = await mercadoriasService.BuscarMercadoria("Pi");
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+    }
+
+    [Fact]
+    public async void Deve_Buscar_Uma_Mercadoria_Pelo_Codigo_De_Barra()
+    {
+        var response = await mercadoriasService.GetMercadoriaCodigoBarra("12345695");
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+
+        var payload = ((OkObjectResult)response).Value as MercadoriaDTO;
+        Assert.Equal("D1020", payload?.Referencia);
+    }
+
 }
