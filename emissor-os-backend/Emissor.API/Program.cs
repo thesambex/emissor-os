@@ -1,7 +1,9 @@
 using Emissor.Application.Database;
 using Emissor.Application.Factory;
+using Emissor.Application.Providers;
 using Emissor.Application.Repository;
 using Emissor.Application.Services;
+using Emissor.Infra.Auth;
 using Emissor.Infra.Factory;
 using Emissor.Infra.Repository;
 using Emissor.Infra.Services;
@@ -23,6 +25,32 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
     {
         opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Emissor OS", Version = "v1" });
+        opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "Por favor insira o token",
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            BearerFormat = "JWT",
+            Scheme = "bearer"
+        });
+
+        opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                },
+                new List<string>()
+            }
+        });
     }
 );
 
@@ -66,10 +94,14 @@ builder.Services.AddCors(opt =>
 });
 
 builder.Services.AddDbContext<PgContext>(opt => opt.UseNpgsql(config["ConnectionStrings:Postgresql"]));
+builder.Services.AddTransient<IJwtProvider, JwtProviderImpl>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWorkImpl>();
 builder.Services.AddTransient<IAbstractRepositoryFactory, AbstractRepositoryFactoryImpl>();
 builder.Services.AddScoped<IUsuariosService, UsuariosServiceImpl>();
 builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
+builder.Services.AddScoped<IClientesService, ClienteServiceImpl>();
+builder.Services.AddScoped<IOrdemServicoService, OrdemServicoServiceImpl>();
+builder.Services.AddScoped<IMercadoriasService, MercadoriasServiceImpl>();
 
 var app = builder.Build();
 
@@ -78,7 +110,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-} else
+}
+else
 {
     using (var scope = app.Services.CreateScope())
     {

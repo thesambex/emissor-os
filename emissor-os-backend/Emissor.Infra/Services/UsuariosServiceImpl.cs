@@ -31,41 +31,37 @@ public class UsuariosServiceImpl : IUsuariosService
 
     public async Task<IActionResult> CriarUsuario(CriarUsuarioDTO body)
     {
-
-        if(await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
-        {
-            return new ObjectResult(new ErrorResponseDTO() { Message = "Já existe um usuário com este nome de usuário", Field = "nome_usuario" })
-            {
-                StatusCode = StatusCodes.Status409Conflict
-            };
-        }
-
-        var usuario = new Usuario();
-        usuario.Nome = body.Nome;
-        usuario.NomeUsuario = body.NomeUsuario;
-
         try
         {
+            if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
+            {
+                return new ObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null))
+                {
+                    StatusCode = StatusCodes.Status409Conflict
+                };
+            }
+
+            var usuario = new Usuario();
+            usuario.Nome = body.Nome;
+            usuario.NomeUsuario = body.NomeUsuario;
             usuario.Senha = passwordHashing.GenerateHash(body.Senha!);
             usuario = await _usuariosRepository.CriarUsuario(usuario);
-        } catch (Exception ex) {
-            _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
+
+            var response = new CriarUsuarioDTO(usuario.Id, usuario.Nome, usuario.NomeUsuario, null);
+
+            return new CreatedAtActionResult("GetUsuario", null, new { id = response.Id }, response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao criar o usuário: {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
-
-        var response = new CriarUsuarioDTO() {
-            Id = usuario.Id,
-            Nome = usuario.Nome,
-            NomeUsuario = usuario.NomeUsuario,
-        };
-
-        return new CreatedAtActionResult("GetUsuario", null, new {id = response.Id}, response);
     }
 
     public async Task<IActionResult> Atualizar(Guid id, AtualizarUsuarioDTO body)
     {
         var usuario = await _usuariosRepository.GetUsuarioById(id);
-        if(usuario == null)
+        if (usuario == null)
         {
             return new NotFoundResult();
         }
@@ -74,12 +70,7 @@ public class UsuariosServiceImpl : IUsuariosService
         {
             if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
             {
-                var error = new ErrorResponseDTO()
-                {
-                    Message = "Já existe um usuário com este nome de usuário",
-                    Field = "nome_usuario"
-                };
-                return new ConflictObjectResult(error);
+                return new ConflictObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null));
             }
         }
 
@@ -96,7 +87,7 @@ public class UsuariosServiceImpl : IUsuariosService
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao atualizar o usuário: ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao atualizar o usuário: {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 
@@ -107,14 +98,18 @@ public class UsuariosServiceImpl : IUsuariosService
     {
         try
         {
-            await _usuariosRepository.DeletarUsuario(id);
-        } catch (Exception ex)
+            if(!await _usuariosRepository.DeletarUsuario(id))
+            {
+                return new NotFoundResult();
+            }
+            
+            return new NoContentResult();
+        }
+        catch (Exception ex)
         {
-            _logger.LogError($"Falha ao deletar o usuário ${id} {ex.InnerException}", ex);
+            _logger.LogError($"Falha ao deletar o usuário {id} - {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
-
-        return new NoContentResult();
     }
 
     public async Task<IActionResult> GetUsuarioById(Guid id)
@@ -125,7 +120,7 @@ public class UsuariosServiceImpl : IUsuariosService
             return new NotFoundResult();
         }
 
-        return new OkObjectResult(new UsuarioDTO() { Id = usuario.Id, Nome = usuario.Nome, NomeUsuario = usuario.NomeUsuario});
+        return new OkObjectResult(new UsuarioDTO(usuario.Id, usuario.Nome, usuario.NomeUsuario));
     }
 
     public async Task<IActionResult> GetUsuarioByNomeUsuario(string username)
@@ -136,7 +131,7 @@ public class UsuariosServiceImpl : IUsuariosService
             return new NotFoundResult();
         }
 
-        return new ObjectResult(new UsuarioDTO() { Id = usuario.Id, Nome = usuario.Nome, NomeUsuario = usuario.NomeUsuario });
+        return new OkObjectResult(new UsuarioDTO(usuario.Id, usuario.Nome, usuario.NomeUsuario));
     }
 
 }

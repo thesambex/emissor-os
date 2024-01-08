@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Emissor.Infra.Repository;
 
-public class UsuariosRepositorryImpl : IUsuariosRepository
+internal class UsuariosRepositorryImpl : IUsuariosRepository
 {
 
     private readonly PgContext _pgContext;
@@ -36,25 +36,27 @@ public class UsuariosRepositorryImpl : IUsuariosRepository
     public async Task AtualizarUsuario(Guid id, Usuario usuario)
     {
         var usu = await _pgContext.Usuarios.FindAsync(id);
+        if (usu == null) { return; }
+
         usu.Nome = usuario.Nome;
         usu.Senha = usuario.Senha;
-        
-        if(!usu.NomeUsuario.Equals(usuario.NomeUsuario))
+
+        if (!usu.NomeUsuario.Equals(usuario.NomeUsuario))
         {
             usu.NomeUsuario = usuario.NomeUsuario;
         }
-        
+
         await _pgContext.SaveChangesAsync();
     }
 
-    public async Task DeletarUsuario(Guid id)
+    public async Task<bool> DeletarUsuario(Guid id)
     {
         var usuario = await _pgContext.Usuarios.FindAsync(id);
-        if(usuario != null)
-        {
-            _pgContext.Usuarios.Remove(usuario);
-            await _pgContext.SaveChangesAsync();
-        }
+        if (usuario == null) { return false; }
+
+        _pgContext.Usuarios.Remove(usuario);
+        await _pgContext.SaveChangesAsync();
+        return true;
     }
 
 }

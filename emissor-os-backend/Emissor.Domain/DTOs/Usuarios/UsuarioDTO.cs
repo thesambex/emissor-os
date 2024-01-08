@@ -7,12 +7,4 @@ using System.Threading.Tasks;
 
 namespace Emissor.Domain.DTOs.Usuarios;
 
-public class UsuarioDTO
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
-    [JsonPropertyName("nome")]
-    public string Nome { get; set; }
-    [JsonPropertyName("nome_usuario")]
-    public string NomeUsuario { get; set; }
-}
+public record UsuarioDTO(Guid Id, string Nome, [property: JsonPropertyName("nome_usuario")] string NomeUsuario);

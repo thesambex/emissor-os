@@ -20,9 +20,14 @@ public class AbstractRepositoryFactoryImpl : IAbstractRepositoryFactory
         _pgContext = pgContext;
     }
 
-    public IUsuariosRepository CreateUsuariosRepository()
-    {
-        return new UsuariosRepositorryImpl(_pgContext);
-    }
+    public IUsuariosRepository CreateUsuariosRepository() => new UsuariosRepositorryImpl(_pgContext);
+
+    public IClientesRepository CreateClientesRepository() => new ClientesRepositoryImpl(_pgContext);
+
+    public IOrdemServicoRepository CreateOrdemServicoRepository() => new OrdemServicoRepositoryImpl(_pgContext);
+
+    public IMercadoriaRepository CreateMercadoriaRepository() => new MercadoriaRepositoryImpl(_pgContext);
+
+    public IOrdemServicoMercadoriasRepository CreateOrdemServicoMercadoriaRepository() => new OrdemServicoMercadoriaRepositoryImpl(_pgContext);
 
 }

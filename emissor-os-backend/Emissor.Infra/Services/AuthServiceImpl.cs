@@ -1,4 +1,5 @@
 ﻿using Emissor.Application.Factory;
+using Emissor.Application.Providers;
 using Emissor.Application.Repository;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs.Auth;
@@ -8,12 +9,9 @@ using Emissor.Domain.Entities;
 using Emissor.Infra.Security.Password;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,19 +23,19 @@ public class AuthServiceImpl : IAuthService
 
     private readonly PasswordHashingManager passwordHashing = new PasswordHashingManager();
     private readonly IUsuariosRepository _usuariosRepository;
-    private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
+    private readonly IJwtProvider _jwtProvider;
 
-    public AuthServiceImpl(IConfiguration configuration, ILogger<AuthServiceImpl> logger, IAbstractRepositoryFactory abstractRepositoryFactory)
+    public AuthServiceImpl(ILogger<AuthServiceImpl> logger, IAbstractRepositoryFactory abstractRepositoryFactory, IJwtProvider jwtProvider)
     {
-        _configuration = configuration;
         _usuariosRepository = abstractRepositoryFactory.CreateUsuariosRepository();
         _logger = logger;
+        _jwtProvider = jwtProvider;
     }
 
     public async Task<IActionResult> SignIn(SignInDTO body)
     {
-        try 
+        try
         {
             var usuario = await _usuariosRepository.GetUsuarioByNomeUsuario(body.NomeUsuario);
             if (usuario == null)
@@ -50,23 +48,7 @@ public class AuthServiceImpl : IAuthService
                 return new UnauthorizedResult();
             }
 
-            var securityKeys = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!));
-            var credentials = new SigningCredentials(securityKeys, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                _configuration["JwtSettings:Issuer"],
-                _configuration["JwtSettings:Audience"],
-                null,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials!
-                );
-
-            var response = new TokenDTO()
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token)
-            };
-
-            return new OkObjectResult(response);
+            return new OkObjectResult(new TokenDTO(_jwtProvider.GenerateJwt(usuario)));
         }
         catch (Exception ex)
         {
@@ -77,26 +59,25 @@ public class AuthServiceImpl : IAuthService
 
     public async Task<IActionResult> SignUp(CriarUsuarioDTO body)
     {
-        if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
-        {
-            return new ObjectResult(new ErrorResponseDTO() { Message = "Já existe um usuário com este nome de usuário", Field = "nome_usuario" })
-            {
-                StatusCode = StatusCodes.Status409Conflict
-            };
-        }
-
-        var usuario = new Usuario();
-        usuario.Nome = body.Nome;
-        usuario.NomeUsuario = body.NomeUsuario;
-
         try
         {
+            if (await _usuariosRepository.IssetUsuarioByNomeUsuario(body.NomeUsuario))
+            {
+                return new ObjectResult(new ErrorResponseDTO("Já existe um usuário com este nome de usuário", "nome_usuario", null))
+                {
+                    StatusCode = StatusCodes.Status409Conflict
+                };
+            }
+
+            var usuario = new Usuario();
+            usuario.Nome = body.Nome;
+            usuario.NomeUsuario = body.NomeUsuario;
             usuario.Senha = passwordHashing.GenerateHash(body.Senha!.Trim());
             usuario = await _usuariosRepository.CriarUsuario(usuario);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Falha ao criar o usuário: ${ex.InnerException}", ex);
+            _logger.LogError($"Falha ao criar o usuário: {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 

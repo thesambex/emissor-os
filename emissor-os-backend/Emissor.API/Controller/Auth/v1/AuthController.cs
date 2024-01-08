@@ -23,19 +23,13 @@ public class AuthController
     [Route("signup")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CriarUsuarioDTO))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> SignUp(CriarUsuarioDTO body)
-    {
-        return await _authService.SignUp(body);
-    }
+    public async Task<IActionResult> SignUp(CriarUsuarioDTO body) => await _authService.SignUp(body);
 
     [HttpPost]
     [Route("signin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> SignIn(SignInDTO body)
-    {
-        return await _authService.SignIn(body);
-    }
+    public async Task<IActionResult> SignIn(SignInDTO body) => await _authService.SignIn(body);
 
 }

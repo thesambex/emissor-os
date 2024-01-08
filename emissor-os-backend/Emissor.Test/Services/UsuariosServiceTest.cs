@@ -48,13 +48,7 @@ public class UsuariosServiceTest : IDisposable
     [Fact]
     public async void Deve_Cadastrar_Um_Novo_Usuario()
     {
-        var usuario = new CriarUsuarioDTO()
-        {
-            Nome = "Ives Samuel",
-            NomeUsuario = "vlo",
-            Senha = "163321"
-        };
-
+        var usuario = new CriarUsuarioDTO(null, "José Dores", "dosed", "J@s123");
         var result = await usuariosService.CriarUsuario(usuario);
 
         Assert.NotNull(result);
@@ -64,7 +58,7 @@ public class UsuariosServiceTest : IDisposable
     [Fact]
     public async void Deve_Obter_Um_Usuario()
     {
-        var response = await usuariosService.GetUsuarioById(Guid.Parse("5c958852-b81b-4d36-86b6-ead7708b8444"));
+        var response = await usuariosService.GetUsuarioById(Guid.Parse("3ceb9fa1-2db8-4a36-8745-42b6c51f4375"));
 
         Assert.NotNull(response);
         Assert.IsType<OkObjectResult>(response);
@@ -77,14 +71,8 @@ public class UsuariosServiceTest : IDisposable
     public async void Deve_Atualizar_Um_Usuario()
     {
 
-        var usuarioDTO = new AtualizarUsuarioDTO()
-        {
-            Nome = "Ives",
-            NomeUsuario = "ivl",
-            Senha = "163"
-        };
-
-        var result = await usuariosService.Atualizar(Guid.Parse("5c958852-b81b-4d36-86b6-ead7708b8444"), usuarioDTO);
+        var usuarioDTO = new AtualizarUsuarioDTO(null, "Bufalo Bill", "manoel", "man@6l");
+        var result = await usuariosService.Atualizar(Guid.Parse("3ceb9fa1-2db8-4a36-8745-42b6c51f4375"), usuarioDTO);
         
         Assert.NotNull(result);
         Assert.IsType<OkResult>(result);
@@ -93,7 +81,7 @@ public class UsuariosServiceTest : IDisposable
     [Fact(Skip = "Não deve deletar um usuário no momento")]
     public async void Deve_Deletar_Um_Usuario()
     {
-        var result = await usuariosService.Deletar(Guid.Parse("5c958852-b81b-4d36-86b6-ead7708b8444"));
+        var result = await usuariosService.Deletar(Guid.Parse("3ceb9fa1-2db8-4a36-8745-42b6c51f4375"));
 
         Assert.NotNull(result);
         Assert.IsType<NoContentResult>(result);

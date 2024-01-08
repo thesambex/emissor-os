@@ -20,8 +20,11 @@ namespace Emissor.Infra.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "tipo_unidades", new[] { "unidade", "metro", "kilo", "litro" });
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.HasSequence("numero_os_seq");
 
             modelBuilder.Entity("Emissor.Domain.Entities.Cliente", b =>
                 {
@@ -33,7 +36,8 @@ namespace Emissor.Infra.Migrations
 
                     b.Property<string>("Bairro")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
                         .HasColumnName("bairro");
 
                     b.Property<string>("Documento")
@@ -49,16 +53,19 @@ namespace Emissor.Infra.Migrations
                         .HasColumnName("endereco");
 
                     b.Property<int>("EnderecoNumero")
-                        .HasColumnType("integer")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("endereco_numero");
 
                     b.Property<bool>("IsPJ")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(false)
                         .HasColumnName("is_pj");
 
                     b.Property<string>("Municipio")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
                         .HasColumnName("municipio");
 
                     b.Property<string>("Nome")
@@ -73,6 +80,132 @@ namespace Emissor.Infra.Migrations
                         .IsUnique();
 
                     b.ToTable("clientes", "clientes");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.Mercadoria", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<string>("CodigoBarra")
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("codigo_barra");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("descricao");
+
+                    b.Property<double>("Preco")
+                        .HasColumnType("DECIMAL(8,2)")
+                        .HasColumnName("preco");
+
+                    b.Property<string>("Referencia")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("referencia");
+
+                    b.Property<int>("Unidade")
+                        .HasColumnType("integer")
+                        .HasColumnName("unidade");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Referencia")
+                        .IsUnique();
+
+                    b.ToTable("mercadorias", "estoque");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<Guid>("AtendenteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("atendente_id");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cliente_id");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("descricao");
+
+                    b.Property<DateTimeOffset?>("DtFim")
+                        .HasColumnType("TIMESTAMPTZ")
+                        .HasColumnName("dt_fim");
+
+                    b.Property<DateTimeOffset>("DtInicio")
+                        .HasColumnType("TIMESTAMPTZ")
+                        .HasColumnName("dt_inicio");
+
+                    b.Property<long>("Numero")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("numero")
+                        .HasDefaultValueSql("nextval('numero_os_seq')");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("text")
+                        .HasColumnName("observacoes");
+
+                    b.Property<double>("ValorFinal")
+                        .HasColumnType("DECIMAL(10,2)")
+                        .HasColumnName("valor_final");
+
+                    b.Property<double>("ValorHora")
+                        .HasColumnType("DECIMAL(8,2)")
+                        .HasColumnName("valor_hora");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtendenteId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("ordens_servico", "ordens_servico");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServicoMercadoria", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<Guid>("MercadoriaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("mercadoria_id");
+
+                    b.Property<Guid>("OrdemServicoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ordem_servico_id");
+
+                    b.Property<double>("Quantidade")
+                        .HasColumnType("DECIMAL(7,2)")
+                        .HasColumnName("quantidade");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MercadoriaId");
+
+                    b.HasIndex("OrdemServicoId");
+
+                    b.ToTable("ordens_servico_mercadoias", "ordens_servico");
                 });
 
             modelBuilder.Entity("Emissor.Domain.Entities.Usuario", b =>
@@ -107,6 +240,64 @@ namespace Emissor.Infra.Migrations
                         .IsUnique();
 
                     b.ToTable("usuarios", "usuarios");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
+                {
+                    b.HasOne("Emissor.Domain.Entities.Usuario", "Usuario")
+                        .WithMany("OrdensServicos")
+                        .HasForeignKey("AtendenteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Emissor.Domain.Entities.Cliente", "Cliente")
+                        .WithMany("OrdensServico")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServicoMercadoria", b =>
+                {
+                    b.HasOne("Emissor.Domain.Entities.Mercadoria", "Mercadoria")
+                        .WithMany("OrdemServicoMercadorias")
+                        .HasForeignKey("MercadoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Emissor.Domain.Entities.OrdemServico", "OrdemServico")
+                        .WithMany("OrdemServicoMercadorias")
+                        .HasForeignKey("OrdemServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mercadoria");
+
+                    b.Navigation("OrdemServico");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.Cliente", b =>
+                {
+                    b.Navigation("OrdensServico");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.Mercadoria", b =>
+                {
+                    b.Navigation("OrdemServicoMercadorias");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.OrdemServico", b =>
+                {
+                    b.Navigation("OrdemServicoMercadorias");
+                });
+
+            modelBuilder.Entity("Emissor.Domain.Entities.Usuario", b =>
+                {
+                    b.Navigation("OrdensServicos");
                 });
 #pragma warning restore 612, 618
         }

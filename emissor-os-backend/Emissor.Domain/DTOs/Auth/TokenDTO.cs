@@ -7,10 +7,4 @@ using System.Threading.Tasks;
 
 namespace Emissor.Domain.DTOs.Auth;
 
-public class TokenDTO
-{
-
-    [JsonPropertyName("token")]
-    public string Token { get; set; }
-
-}
+public record TokenDTO(string Token);
