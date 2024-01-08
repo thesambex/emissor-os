@@ -3,6 +3,7 @@ using Emissor.Application.Repository;
 using Emissor.Application.Services;
 using Emissor.Domain.DTOs.Clientes;
 using Emissor.Domain.DTOs.OrdemServico;
+using Emissor.Domain.DTOs.Standard;
 using Emissor.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -80,7 +81,7 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
 
             var servicoCliente = ordemServico.Cliente;
             var mercadorias = ordemServico.OrdemServicoMercadorias?.Select(m => new MercadoriaOSDTO(m.Id, m.OrdemServicoId, m.MercadoriaId, m.Mercadoria?.Descricao, m.Mercadoria?.Preco, m.Quantidade)).ToList();
-            
+
             ordemServico.ValorFinal = ordemServico.ValorTotalHoras() + mercadorias?.Sum(e => e.Quantidade * e.Valor) ?? 0;
 
             var response = new OSDTO(
@@ -224,6 +225,37 @@ public class OrdemServicoServiceImpl : IOrdemServicoService
         {
             await _unitOfWork.Rollback();
             _logger.LogError($"Falha ao adicionar mercadorias a ordem de serviço {ex.InnerException}", ex);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    public async Task<IActionResult> ListarOS(int pageIndex)
+    {
+        try
+        {
+
+            if(pageIndex < 0)
+            {
+                return new ObjectResult(new ErrorResponseDTO("O índice da página não pode ser menor que 0", "pageIndex", null))
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+
+            var response = new List<OSDTO>();
+            var data = await _ordemServicoRepository.ListarOS(pageIndex);
+            data.ForEach(e =>
+            {
+                var cliente = new ClienteDTO(e.Cliente.Id, e.Cliente.Nome, e.Cliente.Documento, e.Cliente.Endereco, e.Cliente.EnderecoNumero, e.Cliente.Bairro, e.Cliente.Municipio, e.Cliente.IsPJ);
+                var mercadorias = e.OrdemServicoMercadorias?.Select(m => new MercadoriaOSDTO(m.Id, m.OrdemServicoId, m.MercadoriaId, m.Mercadoria?.Descricao, m.Mercadoria?.Preco, m.Quantidade)).ToList();
+                response.Add(new OSDTO(e.Id, e.Numero, e.AtendenteId, e.Descricao, e.Observacoes, e.ValorHora, e.ValorTotalHoras() + mercadorias?.Sum(e => e.Quantidade * e.Valor) ?? 0, e.DtInicio.LocalDateTime, e.DtFim?.LocalDateTime, cliente, mercadorias));
+            });
+
+            return new OkObjectResult(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Falha ao listar as ordens de serviço {ex.InnerException}", ex);
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }

@@ -14,4 +14,5 @@ public interface IOrdemServicoRepository
     Task<OrdemServico?> Finalizar(Guid id, OrdemServico input);
     Task<bool> DeletarOS(Guid id);
     Task<bool> ExisteOS(Guid id);
+    Task<List<OrdemServico>> ListarOS(int index);
 }

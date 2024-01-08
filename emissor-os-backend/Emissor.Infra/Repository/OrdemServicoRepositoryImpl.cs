@@ -44,7 +44,7 @@ public class OrdemServicoRepositoryImpl : IOrdemServicoRepository
     public async Task<bool> DeletarOS(Guid id)
     {
         var ordemServico = await _pgContext.OrdensServico.FindAsync(id);
-        if(ordemServico == null) { return false; }
+        if (ordemServico == null) { return false; }
 
         _pgContext.OrdensServico.Remove(ordemServico);
         await _pgContext.SaveChangesAsync();
@@ -52,5 +52,7 @@ public class OrdemServicoRepositoryImpl : IOrdemServicoRepository
     }
 
     public async Task<bool> ExisteOS(Guid id) => await _pgContext.OrdensServico.CountAsync(e => e.Id == id) > 0;
+
+    public async Task<List<OrdemServico>> ListarOS(int index) => _pgContext.OrdensServico.Include(e => e.Cliente).Include(e => e.OrdemServicoMercadorias).ThenInclude(e => e.Mercadoria).Skip(index).Take(10).ToList();
 
 }

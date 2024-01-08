@@ -92,13 +92,25 @@ public class OrdensServicoServiceTest : IDisposable
     {
         var mercadorias = new List<MercadoriaOSDTO>()
         {
-            new MercadoriaOSDTO(null, null, Guid.Parse("da69e8fd-24aa-44e8-a38a-d17731245af6"), null, 3.0)
+            new MercadoriaOSDTO(null, null, Guid.Parse("da69e8fd-24aa-44e8-a38a-d17731245af6"), null, null, 3.0)
         };
 
         var response = await ordemServicoService.AdicionarMercadorias(Guid.Parse("6dd45f32-baff-46e0-bfdf-8083b9d30b77"), mercadorias);
 
         Assert.NotNull(response);
         Assert.IsType<NoContentResult>(response);
+    }
+
+    [Fact]
+    public async void Deve_Listar_Ordens_De_Servico()
+    {
+        var response = await ordemServicoService.ListarOS(0);
+
+        Assert.NotNull(response);
+        Assert.IsType<OkObjectResult>(response);
+
+        var payload = ((OkObjectResult)response).Value as List<OSDTO>;
+        Assert.NotNull(payload);
     }
         
 }

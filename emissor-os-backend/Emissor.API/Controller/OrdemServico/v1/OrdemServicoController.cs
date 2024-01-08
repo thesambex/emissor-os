@@ -77,4 +77,11 @@ public class OrdemServicoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AdicionarMercadorias(Guid id, List<MercadoriaOSDTO> mercadorias) => await _ordemServicoService.AdicionarMercadorias(id, mercadorias);
 
+    [HttpGet]
+    [Route("listar")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OSDTO>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ListarOS(int pageIndex) => await _ordemServicoService.ListarOS(pageIndex);
+
 }
